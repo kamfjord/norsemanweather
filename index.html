@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Norseman Forecast</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <h1>⛰️ Norseman Forecast</h1>
+      <p>Xtreme Triathlon · Eidfjord → Gaustatoppen · 226 km</p>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="card controls">
+
+      <div class="date-group">
+        <label for="race-date">Race Date</label>
+        <input type="date" id="race-date">
+      </div>
+
+      <div class="planner">
+
+        <div class="prow">
+          <div class="prow-left swim-col">
+            <span class="picon">🏊</span><span class="pname">Swim</span>
+          </div>
+          <div class="prow-inputs">
+            <select id="swim-h"></select><span class="unit">h</span>
+            <select id="swim-m"></select><span class="unit">min</span>
+          </div>
+          <div class="prow-note">Max 2:15</div>
+        </div>
+
+        <div class="prow trans-prow">
+          <div class="prow-left">
+            <span class="picon">↕</span><span class="pname muted">T1</span>
+          </div>
+          <div class="prow-inputs">
+            <select id="t1-m"></select><span class="unit">min</span>
+            <select id="t1-s"></select><span class="unit">sec</span>
+          </div>
+          <div class="prow-note"></div>
+        </div>
+
+        <div class="prow">
+          <div class="prow-left bike-col">
+            <span class="picon">🚴</span><span class="pname">Bike</span>
+          </div>
+          <div class="prow-inputs">
+            <select id="bike-h"></select><span class="unit">h</span>
+            <select id="bike-m"></select><span class="unit">min</span>
+          </div>
+          <div class="prow-note"></div>
+        </div>
+
+        <div class="prow trans-prow">
+          <div class="prow-left">
+            <span class="picon">↕</span><span class="pname muted">T2</span>
+          </div>
+          <div class="prow-inputs">
+            <select id="t2-m"></select><span class="unit">min</span>
+            <select id="t2-s"></select><span class="unit">sec</span>
+          </div>
+          <div class="prow-note"></div>
+        </div>
+
+        <div class="prow">
+          <div class="prow-left run-col">
+            <span class="picon">🏃</span><span class="pname">Run</span>
+          </div>
+          <div class="prow-inputs">
+            <select id="run-h"></select><span class="unit">h</span>
+            <select id="run-m"></select><span class="unit">min</span>
+          </div>
+          <div class="prow-note"></div>
+        </div>
+
+        <div class="total-bar">
+          <span class="total-label">Total Race Time</span>
+          <span id="total-time" class="total-val">—</span>
+          <span id="total-finish" class="total-finish"></span>
+        </div>
+
+      </div>
+
+      <button id="get-forecast" class="btn-primary">Get Weather Forecast</button>
+    </div>
+
+    <div id="error-msg" class="error hidden"></div>
+
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Fetching weather data…</p>
+    </div>
+
+    <div id="results" class="hidden">
+      <div class="card">
+        <div class="race-summary" id="race-summary"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th class="num">km</th>
+                <th class="num">Est. Time</th>
+                <th class="center">Sky</th>
+                <th class="num">Temp</th>
+                <th class="num">Wind</th>
+                <th class="center">Dir</th>
+                <th class="num">Rain</th>
+              </tr>
+            </thead>
+            <tbody id="forecast-body"></tbody>
+          </table>
+        </div>
+        <p class="footnote">Coordinates are approximate. Weather from <a href="https://yr.no" target="_blank">Yr.no</a> / MET Norway.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
