@@ -401,9 +401,9 @@ function norwayOffset(month) {
   return (month >= 4 && month <= 10) ? 2 : 1;
 }
 
-function raceStartUtc(year, month, day) {
+function raceStartUtc(year, month, day, startHour = 5, startMin = 0) {
   const offset = norwayOffset(month);
-  return new Date(Date.UTC(year, month - 1, day, 5 - offset, 0, 0));
+  return new Date(Date.UTC(year, month - 1, day, startHour - offset, startMin, 0));
 }
 
 function formatHMS(totalSeconds) {
@@ -423,9 +423,9 @@ function formatLocalTime(utcDate, month) {
   return `${h}:${mi}`;
 }
 
-function finishClock(year, month, day, totalSeconds) {
+function finishClock(year, month, day, totalSeconds, startHour = 5, startMin = 0) {
   const offset   = norwayOffset(month);
-  const startUtc = Date.UTC(year, month - 1, day, 5 - offset, 0, 0);
+  const startUtc = Date.UTC(year, month - 1, day, startHour - offset, startMin, 0);
   const local    = new Date(startUtc + (totalSeconds * 1_000) + (offset * 3_600_000));
   return String(local.getUTCHours()).padStart(2, '0') + ':' +
          String(local.getUTCMinutes()).padStart(2, '0');
@@ -510,6 +510,8 @@ function computeSegFracs(finishSec, checkpoints, startKey, endKey) {
 
 function getPlanner() {
   return {
+    startHour: int('start-h'),
+    startMin:  int('start-m'),
     swimMin: int('swim-h') * 60 + int('swim-m'),
     t1Sec:   int('t1-m') * 60 + int('t1-s'),
     bikeMin: int('bike-h') * 60 + int('bike-m'),
@@ -528,8 +530,9 @@ function updateTotal() {
   const dateVal = document.getElementById('race-date').value;
   if (dateVal && totalSec > 0) {
     const [year, month, day] = dateVal.split('-').map(Number);
+    const p2 = getPlanner();
     document.getElementById('total-finish').textContent =
-      `Est. finish: ${finishClock(year, month, day, totalSec)}`;
+      `Est. finish: ${finishClock(year, month, day, totalSec, p2.startHour, p2.startMin)}`;
   } else {
     document.getElementById('total-finish').textContent = '';
   }
@@ -703,12 +706,13 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
   tbody.innerHTML = '';
 
   const totalSec = (planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec;
-  const finish = finishClock(year, month, day, totalSec);
-  const mo     = MONTHS[month - 1];
+  const finish   = finishClock(year, month, day, totalSec, planner.startHour, planner.startMin);
+  const mo       = MONTHS[month - 1];
+  const startStr = `${String(planner.startHour).padStart(2,'0')}:${String(planner.startMin).padStart(2,'0')}`;
 
   document.getElementById('race-summary').innerHTML =
     `<span><strong>${mo} ${day}, ${year}</strong></span>` +
-    `<span>Start: 05:00 · ${formatHMS(totalSec)} · Est. finish: ${finish}</span>`;
+    `<span>Start: ${startStr} · ${formatHMS(totalSec)} · Est. finish: ${finish}</span>`;
 
   let lastLeg = null;
 
@@ -818,11 +822,11 @@ async function getForecast() {
   document.getElementById('get-forecast').disabled = true;
 
   try {
-    const startUtc = raceStartUtc(year, month, day);
+    const startUtc = raceStartUtc(year, month, day, planner.startHour, planner.startMin);
     const rows     = buildRows(startUtc, planner);
 
     const swimLoc = SWIM[0]; // Erdal — swim start
-    const swimStartUtcTime = raceStartUtc(year, month, day);
+    const swimStartUtcTime = startUtc;
 
     const [enriched, oceanData] = await Promise.all([
       Promise.all(rows.map(async row => {
@@ -925,11 +929,14 @@ document.addEventListener('DOMContentLoaded', () => {
   makeOpts('run-h',  3, 18, 8, 1);
   makeOpts('run-m',  0, 59, 0);
 
+  makeOpts('start-h', 0, 23, 5, 2);
+  makeOpts('start-m', 0, 59, 0);
+
   document.getElementById('race-date').value = new Date().toISOString().slice(0, 10);
   updateTotal();
 
   document.getElementById('swim-h').addEventListener('change', restrictSwimMinutes);
-  ['swim-h','swim-m','t1-m','t1-s','bike-h','bike-m','t2-m','t2-s','run-h','run-m'].forEach(id => {
+  ['start-h','start-m','swim-h','swim-m','t1-m','t1-s','bike-h','bike-m','t2-m','t2-s','run-h','run-m'].forEach(id => {
     document.getElementById(id).addEventListener('change', updateTotal);
   });
   document.getElementById('race-date').addEventListener('change', updateTotal);

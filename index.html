@@ -19,9 +19,18 @@
 
     <div class="card controls">
 
-      <div class="date-group">
-        <label for="race-date">Race Date</label>
-        <input type="date" id="race-date">
+      <div style="display:flex;gap:1rem;">
+        <div class="date-group" style="flex:1">
+          <label for="race-date">Race Date</label>
+          <input type="date" id="race-date">
+        </div>
+        <div class="date-group">
+          <label>Start Time</label>
+          <div class="prow-inputs">
+            <select id="start-h"></select><span class="unit">h</span>
+            <select id="start-m"></select><span class="unit">min</span>
+          </div>
+        </div>
       </div>
 
       <div class="planner">
