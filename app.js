@@ -742,7 +742,8 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
       lastLeg = row.leg;
       const seg = document.createElement('tr');
       seg.className = `seg-header seg-${row.leg.toLowerCase()}`;
-      let headerText = row.leg;
+      const legEmoji = { Swim: '🏊 ', Bike: '🚴 ', Run: '🏃 ' };
+      let headerText = (legEmoji[row.leg] || '') + row.leg;
       if (row.leg === 'Swim' && waterTemp != null) {
         const wCls = waterTempClass(waterTemp);
         headerText += `<span class="water-temp-note">🌊 Water: <span class="${wCls}">${waterTemp.toFixed(1)}°C</span></span>`;
@@ -754,7 +755,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
           const spd = c.speed != null ? ` ${c.speed.toFixed(1)}m/s` : '';
           return `${formatLocalTime(c.time, month)} <span class="wind-arrow ${cls}" style="transform:rotate(${rot}deg)">↑</span>${spd}`;
         });
-        headerText += `<span class="water-temp-note">Current: ${parts.join(' · ')}</span>`;
+        headerText += `<span class="current-note">Current: ${parts.join(' · ')}</span>`;
       }
       seg.innerHTML = `<td colspan="8">${headerText}</td>`;
       tbody.appendChild(seg);

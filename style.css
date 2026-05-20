@@ -264,6 +264,7 @@ tr.seg-swim td { background: var(--swim); }
 tr.seg-bike td { background: var(--bike); }
 tr.seg-run  td { background: var(--run);  }
 .water-temp-note { opacity: 0.85; font-weight: 400; margin-left: 0.75rem; font-size: 0.75rem; display: inline-block; }
+.current-note { opacity: 0.85; font-weight: 400; margin-left: 0.75rem; font-size: 0.65rem; display: inline-block; }
 
 /* Transition rows in table */
 tr.trans-row td {
