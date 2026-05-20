@@ -764,8 +764,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
     const tr = document.createElement('tr');
     tr.className = `leg-${row.leg.toLowerCase()}`;
 
-    const legIcon = { Swim: '🏊', Bike: '🚴', Run: '🏃' };
-    const badge = `<span class="leg-icon">${legIcon[row.leg]}</span>`;
+    const badge = `<span class="badge badge-${row.leg[0]}">${row.leg[0]}</span>`;
 
     let weatherCells;
     if (!row.entry) {
