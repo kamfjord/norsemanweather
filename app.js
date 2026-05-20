@@ -764,8 +764,6 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
     const tr = document.createElement('tr');
     tr.className = `leg-${row.leg.toLowerCase()}`;
 
-    const badge = `<span class="badge badge-${row.leg[0]}">${row.leg[0]}</span>`;
-
     let weatherCells;
     if (!row.entry) {
       weatherCells = `<td class="center no-data" colspan="5">No forecast</td>`;
@@ -793,7 +791,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
     }
 
     tr.innerHTML =
-      `<td><span class="loc">${badge}${row.cp.name}</span></td>` +
+      `<td><span class="loc">${row.cp.name}</span></td>` +
       `<td class="num">${row.cp.km}</td>` +
       `<td class="num">${formatLocalTime(row.time, month)}</td>` +
       weatherCells;

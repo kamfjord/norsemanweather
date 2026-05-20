@@ -4,15 +4,14 @@
   --bg:        #0c0e11;
   --surface:   #13171e;
   --surface-2: #1a1f28;
-  --text:      #e8eaed;
-  --muted:     #6b7380;
-  --border:    #252a35;
+  --text:      #c8cdd4;
+  --muted:     #52596a;
+  --border:    #222730;
   --radius:    4px;
-  --accent:    #c8102e;
-  --blue:      #3b82f6;
-  --swim:      #38bdf8;
-  --bike:      #34d399;
-  --run:       #fb923c;
+  --accent:    #b8102a;
+  --swim:      #5b9cb8;
+  --bike:      #5a9e7d;
+  --run:       #b07a4e;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,7 +40,7 @@ header h1 {
 }
 header p {
   font-size: 0.75rem;
-  color: #888;
+  color: #666;
   margin-top: 0.3rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -176,7 +175,7 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
 /* ── Total bar ── */
 .total-bar {
   background: #000;
-  color: #fff;
+  color: #c8cdd4;
   padding: 0.75rem 0.9rem;
   display: flex;
   align-items: center;
@@ -188,10 +187,10 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  opacity: 0.55;
+  color: var(--muted);
 }
-.total-val    { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700; }
-.total-finish { font-size: 0.85rem; opacity: 0.8; margin-left: auto; }
+.total-val    { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+.total-finish { font-size: 0.85rem; opacity: 0.7; margin-left: auto; }
 
 /* ── Button ── */
 .btn-primary {
@@ -210,8 +209,8 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-primary:hover    { background: #a50d25; }
-.btn-primary:disabled { background: #333; cursor: not-allowed; }
+.btn-primary:hover    { background: #960d23; }
+.btn-primary:disabled { background: #2a2f38; color: var(--muted); cursor: not-allowed; }
 
 /* ── Loading ── */
 .loading { text-align: center; padding: 2rem; color: var(--muted); }
@@ -227,9 +226,9 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
 
 /* ── Error ── */
 .error {
-  background: #1e0a0a;
-  color: #f87171;
-  border: 1px solid #5a1a1a;
+  background: #1a0d0d;
+  color: #c26b6b;
+  border: 1px solid #3d1a1a;
   border-radius: var(--radius);
   padding: 0.85rem 1rem;
   font-size: 0.9rem;
@@ -240,10 +239,10 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
 /* ── Race summary bar ── */
 .race-summary {
   background: #000;
-  color: #fff;
+  color: #888;
   padding: 0.75rem 1rem;
   font-family: 'Oswald', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   display: flex;
@@ -251,6 +250,7 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   flex-wrap: wrap;
   align-items: center;
 }
+.race-summary strong { color: #fff; }
 
 /* ── Table ── */
 .table-wrap {
@@ -284,9 +284,9 @@ tbody td {
 tbody tr:last-child td { border-bottom: none; }
 
 /* Segment row tints */
-tr.leg-swim { background: rgba(56, 189, 248, 0.04); }
-tr.leg-bike { background: rgba(52, 211, 153, 0.04); }
-tr.leg-run  { background: rgba(251, 146, 60, 0.04); }
+tr.leg-swim { background: rgba(91, 156, 184, 0.05); }
+tr.leg-bike { background: rgba(90, 158, 125, 0.05); }
+tr.leg-run  { background: rgba(176, 122, 78, 0.05); }
 
 /* Segment section headers */
 tr.seg-header td {
@@ -296,15 +296,14 @@ tr.seg-header td {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #000;
+  background: #0a0c0f;
 }
-tr.seg-swim td { background: var(--swim); }
-tr.seg-bike td { background: var(--bike); }
-tr.seg-run  td { background: var(--run);  }
+tr.seg-swim td { color: var(--swim); border-left: 3px solid var(--swim); }
+tr.seg-bike td { color: var(--bike); border-left: 3px solid var(--bike); }
+tr.seg-run  td { color: var(--run);  border-left: 3px solid var(--run);  }
 
-.water-temp-note { opacity: 0.9; font-weight: 500; font-family: 'Inter', sans-serif; margin-left: 0.75rem; font-size: 0.75rem; display: inline-block; }
-.water-temp-note.current { font-size: 0.63rem; font-weight: 400; }
-.leg-icon { font-size: 1rem; flex-shrink: 0; }
+.water-temp-note { font-weight: 400; font-family: 'Inter', sans-serif; margin-left: 0.75rem; font-size: 0.75rem; display: inline-block; opacity: 0.8; }
+.water-temp-note.current { font-size: 0.63rem; }
 
 /* Transition rows */
 tr.trans-row td {
@@ -336,16 +335,16 @@ th.center, td.center { text-align: center; }
 /* Weather */
 .icon { font-size: 1.15rem; }
 .temp { font-weight: 600; }
-.c-red    { color: #f87171; font-weight: 700; }
-.c-yellow { color: #fbbf24; font-weight: 700; }
-.c-green  { color: #4ade80; font-weight: 700; }
+.c-red    { color: #b86060; font-weight: 600; }
+.c-yellow { color: #a07840; font-weight: 600; }
+.c-green  { color: #5e9460; font-weight: 600; }
 
 /* Wind direction arrow */
 .wind-arrow  { display: inline-block; font-size: 1rem; line-height: 1; }
-.wind-calm   { color: #4ade80; }
-.wind-tail   { color: #4ade80; font-weight: 700; }
-.wind-head   { color: #f87171; font-weight: 700; }
-.wind-cross  { color: #fbbf24; font-weight: 700; }
+.wind-calm   { color: #5e8a60; }
+.wind-tail   { color: #5e9460; font-weight: 700; }
+.wind-head   { color: #b86060; font-weight: 700; }
+.wind-cross  { color: #a07840; font-weight: 700; }
 
 td.num { font-variant-numeric: tabular-nums; }
 .no-data { color: var(--muted); font-style: italic; font-size: 0.82rem; }
@@ -357,8 +356,8 @@ td.num { font-variant-numeric: tabular-nums; }
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--border);
 }
-.footnote a { color: var(--accent); text-decoration: none; }
-.footnote a:hover { text-decoration: underline; }
+.footnote a { color: #7a8898; text-decoration: none; }
+.footnote a:hover { color: var(--text); }
 
 /* ── Responsive ── */
 @media (max-width: 420px) {
