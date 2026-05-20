@@ -929,6 +929,20 @@ document.addEventListener('DOMContentLoaded', () => {
   makeOpts('run-h',  3, 18, 8, 1);
   makeOpts('run-m',  0, 59, 0);
 
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', theme);
+  }
+  const savedTheme = localStorage.getItem('theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+  themeToggle.addEventListener('click', () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
   document.getElementById('race-date').value = new Date().toISOString().slice(0, 10);
   updateTotal();
 

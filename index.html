@@ -8,6 +8,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Apply saved theme before render to avoid flash -->
+  <script>
+    (function() {
+      const t = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-784KYDR10E"></script>
   <script>
@@ -21,7 +29,10 @@
 
   <header>
     <div class="header-inner">
-      <h1>⛰️ Norseman Forecast</h1>
+      <div class="header-top">
+        <h1>⛰️ Norseman Forecast</h1>
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme"></button>
+      </div>
       <p>Xtreme Triathlon · Eidfjord → Gaustatoppen · 226 km</p>
     </div>
   </header>
