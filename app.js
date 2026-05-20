@@ -755,7 +755,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
           const spd = c.speed != null ? ` ${c.speed.toFixed(1)}m/s` : '';
           return `${formatLocalTime(c.time, month)} <span class="wind-arrow ${cls}" style="transform:rotate(${rot}deg)">↑</span>${spd}`;
         });
-        headerText += `<span class="current-note">Current: ${parts.join(' · ')}</span>`;
+        headerText += `<span class="water-temp-note current">Current: ${parts.join(' · ')}</span>`;
       }
       seg.innerHTML = `<td colspan="8">${headerText}</td>`;
       tbody.appendChild(seg);
@@ -764,7 +764,8 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
     const tr = document.createElement('tr');
     tr.className = `leg-${row.leg.toLowerCase()}`;
 
-    const badge = `<span class="badge badge-${row.leg[0]}">${row.leg[0]}</span>`;
+    const legIcon = { Swim: '🏊', Bike: '🚴', Run: '🏃' };
+    const badge = `<span class="leg-icon">${legIcon[row.leg]}</span>`;
 
     let weatherCells;
     if (!row.entry) {
