@@ -509,9 +509,10 @@ function computeSegFracs(finishSec, checkpoints, startKey, endKey) {
 // ── Planner ───────────────────────────────────────────────────────────────────
 
 function getPlanner() {
+  const [startHour, startMin] = (document.getElementById('start-time').value || '05:00').split(':').map(Number);
   return {
-    startHour: int('start-h'),
-    startMin:  int('start-m'),
+    startHour,
+    startMin,
     swimMin: int('swim-h') * 60 + int('swim-m'),
     t1Sec:   int('t1-m') * 60 + int('t1-s'),
     bikeMin: int('bike-h') * 60 + int('bike-m'),
@@ -929,16 +930,14 @@ document.addEventListener('DOMContentLoaded', () => {
   makeOpts('run-h',  3, 18, 8, 1);
   makeOpts('run-m',  0, 59, 0);
 
-  makeOpts('start-h', 0, 23, 5, 2);
-  makeOpts('start-m', 0, 59, 0);
-
   document.getElementById('race-date').value = new Date().toISOString().slice(0, 10);
   updateTotal();
 
   document.getElementById('swim-h').addEventListener('change', restrictSwimMinutes);
-  ['start-h','start-m','swim-h','swim-m','t1-m','t1-s','bike-h','bike-m','t2-m','t2-s','run-h','run-m'].forEach(id => {
+  ['swim-h','swim-m','t1-m','t1-s','bike-h','bike-m','t2-m','t2-s','run-h','run-m'].forEach(id => {
     document.getElementById(id).addEventListener('change', updateTotal);
   });
   document.getElementById('race-date').addEventListener('change', updateTotal);
+  document.getElementById('start-time').addEventListener('change', updateTotal);
   document.getElementById('get-forecast').addEventListener('click', getForecast);
 });
