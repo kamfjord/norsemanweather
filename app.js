@@ -896,6 +896,20 @@ async function getForecast() {
     return;
   }
 
+  const totalMin = Math.round(
+    ((planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec) / 60
+  );
+  gtag('event', 'forecast_requested', {
+    race_date:  dateVal,
+    start_time: document.getElementById('start-time').value,
+    swim_min:   planner.swimMin,
+    t1_sec:     planner.t1Sec,
+    bike_min:   planner.bikeMin,
+    t2_sec:     planner.t2Sec,
+    run_min:    planner.runMin,
+    total_min:  totalMin,
+  });
+
   document.getElementById('results').classList.add('hidden');
   document.getElementById('error-msg').classList.add('hidden');
   document.getElementById('loading').classList.remove('hidden');
