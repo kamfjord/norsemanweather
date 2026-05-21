@@ -240,7 +240,7 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-top: 1px solid #1a1f28;
+  border-top: 4px solid var(--bg);
 }
 .shirt-black { border-left: 3px solid #ffffff; }
 .shirt-border { border-left: 3px solid #666666; }
