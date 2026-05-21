@@ -372,6 +372,64 @@ const REF = [
   },
 ];
 
+// ── Shirt predictor ───────────────────────────────────────────────────────────
+// Athlete counts per finish-hour group (matches REF order), pooled across 6 years.
+const HIST_COUNTS = [11, 48, 106, 145, 276, 312, 202, 92, 36];
+const HIST_YEARS  = 6;
+const BLACK_SHIRT = 160;
+
+function predictShirt(finishSec) {
+  let cum = 0;
+  const cdf = HIST_COUNTS.map((n, i) => {
+    cum += n / HIST_YEARS;
+    return { finish: REF[i].finish, cumulative: cum };
+  });
+  const total = Math.round(cum);
+
+  let position;
+  if (finishSec <= cdf[0].finish) {
+    position = Math.max(1, Math.round(finishSec / cdf[0].finish * cdf[0].cumulative));
+  } else if (finishSec >= cdf[cdf.length - 1].finish) {
+    position = total;
+  } else {
+    for (let i = 0; i < cdf.length - 1; i++) {
+      if (finishSec >= cdf[i].finish && finishSec <= cdf[i + 1].finish) {
+        const t = (finishSec - cdf[i].finish) / (cdf[i + 1].finish - cdf[i].finish);
+        position = Math.round(cdf[i].cumulative + t * (cdf[i + 1].cumulative - cdf[i].cumulative));
+        break;
+      }
+    }
+  }
+  return { position, total };
+}
+
+function updateShirt(totalSec) {
+  const bar = document.getElementById('shirt-bar');
+  if (totalSec <= 0) { bar.classList.add('hidden'); return; }
+
+  const { position, total } = predictShirt(totalSec);
+  const emoji = document.getElementById('shirt-emoji');
+  const label = document.getElementById('shirt-label');
+  const pos   = document.getElementById('shirt-pos');
+
+  bar.classList.remove('hidden', 'shirt-black', 'shirt-border', 'shirt-white');
+  pos.textContent = `est. ~${position} of ~${total} finishers`;
+
+  if (position <= BLACK_SHIRT - 25) {
+    bar.classList.add('shirt-black');
+    emoji.textContent = '⚫';
+    label.textContent = 'Black T-shirt';
+  } else if (position <= BLACK_SHIRT + 25) {
+    bar.classList.add('shirt-border');
+    emoji.textContent = '🔘';
+    label.textContent = 'Borderline';
+  } else {
+    bar.classList.add('shirt-white');
+    emoji.textContent = '⚪';
+    label.textContent = 'White T-shirt';
+  }
+}
+
 // ── Checkpoint data ───────────────────────────────────────────────────────────
 // refKey maps each checkpoint to its name in REF.splits for historical timing.
 // Checkpoints without refKey are timed by linear km interpolation between
@@ -617,6 +675,7 @@ function updateTotal() {
   } else {
     document.getElementById('total-finish').textContent = '';
   }
+  updateShirt(totalSec);
 }
 
 // ── Row building ──────────────────────────────────────────────────────────────
