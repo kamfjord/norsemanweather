@@ -1037,7 +1037,8 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
   });
 
-  document.getElementById('race-date').value = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('race-date').value = tomorrow.toISOString().slice(0, 10);
   updateTotal();
 
   document.getElementById('swim-h').addEventListener('change', restrictSwimMinutes);
