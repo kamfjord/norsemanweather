@@ -1070,17 +1070,17 @@ function restrictSwimMinutes() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Defaults: swim 1:30 · T1 10min · bike 7:00 · T2 10min · run 8:00
+  // Defaults: swim 1:30 · T1 5min · bike 7:00 · T2 5min · run 6:30
   makeOpts('swim-h', 0, 2, 1, 1);
   makeOpts('swim-m', 0, 59, 30);
-  makeOpts('t1-m',   0, 59, 10);
+  makeOpts('t1-m',   0, 59, 5);
   makeOpts('t1-s',   0, 59, 0);
   makeOpts('bike-h', 4, 15, 7, 1);
   makeOpts('bike-m', 0, 59, 0);
-  makeOpts('t2-m',   0, 59, 10);
+  makeOpts('t2-m',   0, 59, 5);
   makeOpts('t2-s',   0, 59, 0);
-  makeOpts('run-h',  3, 18, 8, 1);
-  makeOpts('run-m',  0, 59, 0);
+  makeOpts('run-h',  3, 18, 6, 1);
+  makeOpts('run-m',  0, 59, 30);
 
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
