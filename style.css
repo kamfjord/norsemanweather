@@ -233,6 +233,35 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   margin-left: auto;
 }
 
+/* ── Shirt predictor bar ── */
+.shirt-bar {
+  background: #0a0c0f;
+  padding: 0.6rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-top: 1px solid #1a1f28;
+}
+.shirt-black { border-left: 3px solid #ffffff; }
+.shirt-border { border-left: 3px solid #666666; }
+.shirt-white  { border-left: 3px solid #444444; }
+.shirt-emoji  { font-size: 1rem; line-height: 1; }
+.shirt-label  {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.shirt-black .shirt-label { color: #ffffff; }
+.shirt-border .shirt-label { color: #aaaaaa; }
+.shirt-white  .shirt-label { color: #666666; }
+.shirt-pos {
+  font-size: 0.72rem;
+  color: #555;
+  margin-left: auto;
+}
+
 /* ── Total bar ── */
 .total-bar {
   background: #000;
