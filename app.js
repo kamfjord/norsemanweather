@@ -903,9 +903,9 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
     const tr = document.createElement('tr');
     tr.className = `leg-${row.leg.toLowerCase()}`;
 
-    let weatherCells;
+    let weatherCellsLabeled;
     if (!row.entry) {
-      weatherCells = `<td class="center no-data" colspan="5">No forecast</td>`;
+      weatherCellsLabeled = `<td class="center no-data" data-label="Sky" colspan="5">No forecast</td>`;
     } else {
       const inst  = row.entry.data.instant.details;
       const next  = row.entry.data.next_1_hours ?? row.entry.data.next_6_hours ?? null;
@@ -914,26 +914,24 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
       const temp  = inst.air_temperature ?? null;
       const wind  = inst.wind_speed ?? null;
       const dir   = inst.wind_from_direction ?? null;
-
       const tempStr  = temp   != null ? `${temp.toFixed(1)}°`  : '—';
       const windStr  = wind   != null ? `${wind.toFixed(1)}`   : '—';
       const dirCell  = dir    != null ? windArrow(dir, row.cp.routeBearing ?? 90, wind ?? 0) : '—';
       const rainStr  = precip != null ? `${precip.toFixed(1)}` : '—';
       const cls      = temp   != null ? tempClass(temp, row.leg) : '';
-
-      weatherCells =
-        `<td class="center icon">${symbolEmoji(sym)}</td>` +
-        `<td class="num temp ${cls}">${tempStr}</td>` +
-        `<td class="num">${windStr} m/s</td>` +
-        `<td class="center">${dirCell}</td>` +
-        `<td class="num">${rainStr} mm</td>`;
+      weatherCellsLabeled =
+        `<td class="center icon" data-label="Sky">${symbolEmoji(sym)}</td>` +
+        `<td class="num temp ${cls}" data-label="Temp">${tempStr}</td>` +
+        `<td class="num" data-label="Wind">${windStr} m/s</td>` +
+        `<td class="center" data-label="Dir">${dirCell}</td>` +
+        `<td class="num" data-label="Rain">${rainStr} mm</td>`;
     }
 
     tr.innerHTML =
-      `<td><span class="loc">${row.cp.name}</span></td>` +
-      `<td class="num">${row.cp.km}</td>` +
-      `<td class="num">${formatLocalTime(row.time, month)}</td>` +
-      weatherCells;
+      `<td data-label="Location"><span class="loc">${row.cp.name}</span></td>` +
+      `<td class="num" data-label="km">${row.cp.km}</td>` +
+      `<td class="num" data-label="Time">${formatLocalTime(row.time, month)}</td>` +
+      weatherCellsLabeled;
 
     tbody.appendChild(tr);
   }
@@ -942,6 +940,19 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+
+let _crewCtx = null;
+
+function showView(view) {
+  document.getElementById('crew-results').classList.toggle('hidden', view !== 'crew');
+  document.getElementById('results').classList.toggle('hidden', view !== 'weather');
+  document.getElementById('get-forecast').classList.toggle('active', view === 'weather');
+  document.getElementById('get-crew-schedule').classList.toggle('active', view === 'crew');
+  if (view !== 'weather') {
+    document.getElementById('info-msg').classList.add('hidden');
+    document.getElementById('loading').classList.add('hidden');
+  }
+}
 
 async function getForecast() {
   const dateVal = document.getElementById('race-date').value;
@@ -977,6 +988,7 @@ async function getForecast() {
     return;
   }
 
+  showView('weather');
   document.getElementById('results').classList.add('hidden');
   document.getElementById('error-msg').classList.add('hidden');
   document.getElementById('info-msg').classList.add('hidden');
@@ -1059,58 +1071,440 @@ function showInfo(msg) {
   document.getElementById('info-msg').classList.remove('hidden');
 }
 
+// ── Support crew schedule ─────────────────────────────────────────────────────
+// Support rules per race manual:
+//  Bike: no support km 0–36; open support km 36–142 (Imingfjell dam); T2 at km 180
+//  Run:  car only km 0–25; foot support from km 25 (Zombie Hill); car must go to Stavsro from km 32;
+//        mandatory park at Stavsro km 37; mandatory backpack Stavsro → summit
+//
+// terrainTip: approach grade to each bike stop (from previous checkpoint):
+//   b-dyranut   +19 m/km  (Bjoreio 1090m → Dyranut 1253m)   → climb ✅
+//   b-halne     -12 m/km  (Dyranut 1253m → Halne 1110m)     → descent ⚠️
+//   b-haugastol  -6 m/km  (Halne 1110m → Haugastøl 988m)    → descent ⚠️
+//   b-geilo     -17 m/km  (Ustaoset 990m → Geilo 800m)       → descent ⚠️
+//   b-kikut     +24 m/km  (Geilo 800m → Kikut 990m)          → climb ✅
+//   b-skurdalen -38 m/km  (Kikut 990m → Skurdalen 800m)      → steep descent ⚠️
+//   b-dagali      0 m/km  (Skurdalen 800m → Dagali 800m)     → flat ↔
+//   b-vasstulan  +2 m/km  (Dagali 800m → Vasstulan 820m)     → flat ↔
+//   b-imingfjell+29 m/km  (Start 780m → dam ~986m)           → major climb ✅
+
+const CREW_POINTS = [
+  // ── Bike ──
+  { id: 'b-t1',        seg: 'Bike', name: 'T1 — Eidfjord',    cpRef: 'T1-transition',          km: 0,
+    lat: 60.4683,    lon: 7.07024,
+    mandatory: true,  ruleType: 'transition',
+    ruleText: '1 support member allowed · Wait at swim exit first, then enter T1 together' },
+  { id: 'b-dyranut',   seg: 'Bike', name: 'Dyranut',          cpRef: 'Bike:Dyranut',           km: 35,
+    lat: 60.36834,   lon: 7.502528,
+    default: true,    ruleType: 'first',    terrainTip: 'climb',
+    ruleText: 'First allowed bike support · No support before here · Coffee & breakfast available · 2–5°C · Rider climbing — good timing for crew handoff' },
+  { id: 'b-halne',     seg: 'Bike', name: 'Geiteryggen / km 48', cpRef: 'Bike:Halne fjellstugu', km: 48.4,
+    lat: 60.418173,  lon: 7.704924,
+    default: true,    terrainTip: 'descend',
+    ruleText: 'Official recommended support zone · Rider descending from Dyranut plateau — has gained speed, time your stop well' },
+  { id: 'b-haugastol', seg: 'Bike', name: 'Haugastøl',        cpRef: 'Bike:Haugastøl',         km: 67.1,
+    lat: 60.513302,  lon: 7.866124,
+    default: true,    terrainTip: 'descend',
+    ruleText: 'Official recommended support zone · Good road access and parking · Rider on net descent from plateau' },
+  { id: 'b-geilo',     seg: 'Bike', name: 'Geilo',            cpRef: 'Bike:Geilo',              km: 89.8,
+    lat: 60.532985,  lon: 8.205209,
+    infoOnly: true,  terrainTip: 'descend',
+    ruleText: 'Avoid stopping here unless absolutely necessary — riders descend the plateau at high speed and may fly through Geilo before you even spot them.' },
+  { id: 'b-kikut',     seg: 'Bike', name: 'Kikut',            cpRef: 'Bike:Kikut',              km: 94.7,
+    lat: 60.505009,  lon: 8.235981,
+    default: true,    terrainTip: 'climb',
+    ruleText: 'Official recommended support zone · Rider climbs 190m from Geilo — slowest speed on this section, good window for crew handoff' },
+  { id: 'b-vasstulan', seg: 'Bike', name: 'Vasstulan / km 120', cpRef: 'Bike:Vasstulan',        km: 120,
+    lat: 60.369192,  lon: 8.490193,
+    default: true,    terrainTip: 'flat',
+    ruleText: 'Official recommended support zone · Slight uphill — manageable pace for crew timing' },
+  { id: 'b-imingfjell',seg: 'Bike', name: 'Imingfjell climb', cpRef: 'Bike:Start Imingfjell',  km: 135,
+    cpRefEnd: 'Bike:Imingfjell-dam',  kmEnd: 140.9,
+    lat: 60.235002,  lon: 8.586302,
+    default: true,    ruleType: 'warning',  terrainTip: 'climb',  isClimbZone: true,
+    ruleText: '500m ascent — rider at slowest pace of bike leg · Last support at km 140.9 (red flags mark end) · After last support drive directly to T2' },
+  { id: 'b-t2',        seg: 'Bike', name: 'T2 — Austbygde',  cpRef: 'T2-transition',           km: 178.9,
+    lat: 59.988893,  lon: 8.815504,
+    mandatory: true,  ruleType: 'transition',
+    ruleText: 'Both crew members allowed · Parking up to 400m from transition · Prepare run gear · Pick up bike as soon as athlete departs' },
+  // ── Run ──
+  { id: 'r-ataa',      seg: 'Run',  name: 'Atrå',             cpRef: 'Run:Atrå',                km: 5.6,
+    default: true,    ruleType: 'car',
+    ruleText: 'Car support only · Drive ahead, must overtake within 30 sec · No foot support' },
+  { id: 'r-10k',       seg: 'Run',  name: '10K',              cpRef: 'Run:10K',                 km: 10,
+    default: true,    ruleType: 'car',
+    ruleText: 'Car support only · No foot support' },
+  { id: 'r-tinnsjoe',  seg: 'Run',  name: 'Tinnsjø',          cpRef: 'Run:Tinnsjø',             km: 13,
+    default: true,    ruleType: 'car',
+    ruleText: 'Car support only · No foot support' },
+  { id: 'r-miland',    seg: 'Run',  name: 'Miland',           cpRef: 'Run:Miland',              km: 18,
+    default: true,    ruleType: 'car',
+    ruleText: 'Car support only · No foot support' },
+  { id: 'r-zombie',    seg: 'Run',  name: 'Zombie Hill base', cpRef: 'Run:Zombie Hill base',    km: 25,
+    lat: 59.88341,   lon: 8.67627,
+    default: true,    ruleType: 'foot',
+    ruleText: 'Foot support begins · Food station here · Dedicated support parking 200m from course · Must stay BEHIND athlete — running ahead = pacing penalty' },
+  { id: 'r-langefonn', seg: 'Run',  name: '32K — Langefonn',  cpRef: 'Run:32.5K cut-off',      km: 32,
+    lat: 59.868087,  lon: 8.688599,
+    mandatory: true,  ruleType: 'last-car',
+    ruleText: 'Last car stop · Car must drive directly to Stavsro — no stops allowed between here and Stavsro · Only 1 crew member on foot from here' },
+  { id: 'r-stavsro',   seg: 'Run',  name: 'Stavsro — 37K',   cpRef: 'Run:Stavsro',             km: 37,
+    lat: 59.834369,  lon: 8.713858,
+    mandatory: true,  ruleType: 'mandatory',
+    ruleText: 'ALL cars must park here · Black shirt cut-off (first 160 athletes) · WC available · 1 crew member joins athlete for summit · Mandatory backpack from here' },
+  { id: 'r-gausta',    seg: 'Run',  name: 'Gaustatoppen',     cpRef: 'Run:Gaustatoppen',        km: 42.2,
+    lat: 59.85062,   lon: 8.65575,
+    mandatory: true,  ruleType: 'mandatory',
+    ruleText: 'Mandatory backpack for both athlete and support · Crew must be with athlete at finish line · Lift down: 430 NOK adults / 200 NOK children, or hike to Stavsro' },
+];
+
+const RULE_LABELS = {
+  transition:   { cls: 'rule-transition', text: 'TRANSITION' },
+  first:        { cls: 'rule-first',      text: 'FIRST SUPPORT' },
+  warning:      { cls: 'rule-warning',    text: 'LAST STOP' },
+  car:          { cls: 'rule-car',        text: 'CAR ONLY' },
+  foot:         { cls: 'rule-foot',       text: 'FOOT SUPPORT STARTS' },
+  'last-car':   { cls: 'rule-last-car',   text: 'LAST CAR STOP' },
+  mandatory:    { cls: 'rule-mandatory',  text: 'MANDATORY' },
+};
+
+const TERRAIN_LABELS = {
+  climb:   { cls: 'terrain-climb',   text: '↑ CLIMB'   },
+  descend: { cls: 'terrain-descend', text: '↓ DESCENT' },
+  flat:    { cls: 'terrain-flat',    text: '↔ FLAT'    },
+};
+
+function crewPointTimeByRef(rows, cpRef, month) {
+  if (cpRef === 'T1-transition') {
+    const t1 = rows.find(r => r.isTransition && r.name === 'T1 — Transition');
+    return t1 ? formatLocalTime(t1.startTime, month) : '—';
+  }
+  if (cpRef === 'T2-transition') {
+    const t2 = rows.find(r => r.isTransition && r.name === 'T2 — Transition');
+    return t2 ? formatLocalTime(t2.startTime, month) : '—';
+  }
+  if (cpRef === 'Bike:Imingfjell-dam') {
+    const s  = rows.find(r => !r.isTransition && r.leg === 'Bike' && r.cp.name === 'Start Imingfjell');
+    const tp = rows.find(r => !r.isTransition && r.leg === 'Bike' && r.cp.name === 'Top Imingfjell');
+    if (!s || !tp) return '—';
+    const frac = (140.9 - 135) / (152 - 135);
+    const t = new Date(s.time.getTime() + frac * (tp.time.getTime() - s.time.getTime()));
+    return formatLocalTime(t, month);
+  }
+  const colon  = cpRef.indexOf(':');
+  const leg    = cpRef.slice(0, colon);
+  const cpName = cpRef.slice(colon + 1);
+  const row    = rows.find(r => !r.isTransition && r.leg === leg && r.cp.name === cpName);
+  return row ? formatLocalTime(row.time, month) : '—';
+}
+
+function crewPointTime(rows, pt, month) {
+  return crewPointTimeByRef(rows, pt.cpRef, month);
+}
+
+function loadCrewState() {
+  try { return JSON.parse(localStorage.getItem('norseman-crew') || '{}'); }
+  catch { return {}; }
+}
+
+function saveCrewState() {
+  const state = {};
+  CREW_POINTS.forEach(pt => {
+    const cb = document.getElementById(`crew-cb-${pt.id}`);
+    const ta = document.getElementById(`crew-notes-${pt.id}`);
+    state[pt.id] = {
+      active: pt.mandatory ? true : pt.infoOnly ? true : (cb ? cb.checked : false),
+      notes:  ta ? ta.value : '',
+    };
+  });
+  localStorage.setItem('norseman-crew', JSON.stringify(state));
+}
+
+function buildTimelineItemHtml(pt, isActive, notes, time, timeEnd = null) {
+  const rule    = pt.ruleType   ? RULE_LABELS[pt.ruleType]      : null;
+  const terrain = pt.terrainTip ? TERRAIN_LABELS[pt.terrainTip] : null;
+  const badge   = rule    ? `<span class="crew-badge ${rule.cls}">${rule.text}</span>`   : '';
+  const tbadge  = terrain ? `<span class="crew-badge ${terrain.cls}">${terrain.text}</span>` : '';
+
+  const mapsUrl  = pt.lat ? `https://maps.google.com/?q=${pt.lat},${pt.lon}` : null;
+  const mapsLink = mapsUrl
+    ? `<a href="${mapsUrl}" target="_blank" rel="noopener" class="crew-map-link">📍 Map</a>` : '';
+  const kmLabel = pt.kmEnd ? `km ${pt.km}–${pt.kmEnd}` : `km ${pt.km}`;
+
+  const dotCls = pt.mandatory ? 'tl-dot dot-mandatory'
+    : pt.infoOnly              ? 'tl-dot dot-info'
+    : isActive                 ? `tl-dot dot-${pt.seg.toLowerCase()}` : 'tl-dot';
+
+  const timeHtml = timeEnd
+    ? `<div class="crew-time-climb">
+         <span class="crew-time-row"><span class="crew-time-lbl">Enter</span><span class="crew-time">${time}</span></span>
+         <span class="crew-time-row"><span class="crew-time-lbl">Last</span><span class="crew-time">${timeEnd}</span></span>
+       </div>`
+    : `<span class="crew-time">${time}</span>`;
+
+  const cbHtml = (pt.mandatory || pt.infoOnly)
+    ? '' : `<input type="checkbox" id="crew-cb-${pt.id}" class="crew-cb"${isActive ? ' checked' : ''}>`;
+
+  const expandHidden = (isActive || pt.mandatory) ? '' : ' hidden';
+  const itemCls = ['timeline-item',
+    pt.mandatory ? 'item-mandatory' : '',
+    pt.infoOnly  ? 'item-info'      : '',
+    isActive     ? 'item-active'    : '',
+  ].filter(Boolean).join(' ');
+
+  return `<div class="${itemCls}" data-id="${pt.id}">
+    ${cbHtml}
+    <div class="tl-track" title="${pt.mandatory || pt.infoOnly ? '' : 'Click to toggle this stop'}">
+      <div class="${dotCls}"></div>
+      <div class="tl-line"></div>
+    </div>
+    <div class="tl-body">
+      <div class="tl-header">
+        <div class="tl-main">
+          <div class="crew-name-row">
+            <span class="crew-name">${pt.name}</span>
+            <span class="crew-km">${kmLabel}</span>
+            ${badge}${tbadge}
+          </div>
+          ${pt.ruleText ? `<div class="crew-rule-text">${pt.ruleText}</div>` : ''}
+          ${mapsLink ? `<div class="tl-actions">${mapsLink}</div>` : ''}
+        </div>
+        <div class="tl-time-block">${timeHtml}</div>
+      </div>
+      ${!pt.infoOnly ? `<div class="tl-expand${expandHidden}" id="crew-expand-${pt.id}">
+        <textarea id="crew-notes-${pt.id}" class="crew-notes" placeholder="Instructions: nutrition, clothing, equipment…" rows="2">${notes}</textarea>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderCrewSchedule(rows, year, month, day, planner) {
+  _crewCtx = { rows, year, month, day, planner };
+  const state    = loadCrewState();
+  const totalSec = (planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec;
+  const mo       = MONTHS[month - 1];
+  const startStr = `${String(planner.startHour).padStart(2,'0')}:${String(planner.startMin).padStart(2,'0')}`;
+  const finish   = finishClock(year, month, day, totalSec, planner.startHour, planner.startMin);
+
+  function pointHtml(pt) {
+    const saved    = state[pt.id];
+    const isActive = pt.mandatory ? true : pt.infoOnly ? true : (saved !== undefined ? saved.active : (pt.default ?? false));
+    const notes    = saved?.notes ?? '';
+    const time     = crewPointTime(rows, pt, month);
+    const timeEnd  = pt.cpRefEnd ? crewPointTimeByRef(rows, pt.cpRefEnd, month) : null;
+    return buildTimelineItemHtml(pt, isActive, notes, time, timeEnd);
+  }
+
+  const bikeHtml = CREW_POINTS.filter(p => p.seg === 'Bike').map(pointHtml).join('');
+  const runHtml  = CREW_POINTS.filter(p => p.seg === 'Run').map(pointHtml).join('');
+
+  document.getElementById('crew-body').innerHTML = `
+    <div class="crew-toolbar">
+      <button class="crew-print-btn" id="crew-print-btn">🖨 Print / Save PDF</button>
+    </div>
+    <div class="crew-summary-bar">
+      <span><strong>${mo} ${day}, ${year}</strong></span>
+      <span>Start: ${startStr} · ${formatHMS(totalSec)} · Est. finish: ${finish}</span>
+    </div>
+    <div class="crew-info-banner">Tap a stop's dot to include it in your plan · Add notes for nutrition, clothing and equipment · Saved automatically in your browser.</div>
+
+    <div class="timeline-seg">
+      <div class="crew-segment-header crew-bike-header">🚴 Bike — 180 km</div>
+      <div class="crew-no-support">⛔ No support km 0–35 · Drive directly to Dyranut · No support again km 141.2 to T2</div>
+      <div class="timeline-items">${bikeHtml}</div>
+    </div>
+
+    <div class="timeline-seg">
+      <div class="crew-segment-header crew-run-header">🏃 Run — 42.2 km</div>
+      <div class="crew-no-support">Leave T2 immediately after athlete · Car only km 0–25 · Drive ahead, overtake within 30 sec</div>
+      <div class="timeline-items">${runHtml}</div>
+    </div>
+
+    <p class="crew-footnote">Selections and notes are saved in your browser.</p>
+  `;
+
+  document.getElementById('crew-results').classList.remove('hidden');
+  document.getElementById('crew-print-btn').addEventListener('click', printCrewSchedule);
+
+  CREW_POINTS.forEach(pt => {
+    const ta = document.getElementById(`crew-notes-${pt.id}`);
+    if (ta) ta.addEventListener('input', saveCrewState);
+
+    if (pt.mandatory || pt.infoOnly) return;
+
+    const item   = document.querySelector(`.timeline-item[data-id="${pt.id}"]`);
+    const cb     = document.getElementById(`crew-cb-${pt.id}`);
+    const dot    = item?.querySelector('.tl-dot');
+    const expand = document.getElementById(`crew-expand-${pt.id}`);
+    if (!item || !cb || !expand) return;
+
+    item.querySelector('.tl-track')?.addEventListener('click', () => { cb.click(); });
+
+    cb.addEventListener('change', () => {
+      item.classList.toggle('item-active', cb.checked);
+      if (dot) dot.className = `tl-dot${cb.checked ? ' dot-' + pt.seg.toLowerCase() : ''}`;
+      expand.classList.toggle('hidden', !cb.checked);
+      saveCrewState();
+    });
+  });
+}
+
+function printCrewSchedule() {
+  if (!_crewCtx) return;
+  const { rows, year, month, day, planner } = _crewCtx;
+  const state    = loadCrewState();
+  const mo       = MONTHS[month - 1];
+  const startStr = `${String(planner.startHour).padStart(2,'0')}:${String(planner.startMin).padStart(2,'0')}`;
+  const totalSec = (planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec;
+  const finish   = finishClock(year, month, day, totalSec, planner.startHour, planner.startMin);
+
+  function ptRow(pt) {
+    const saved    = state[pt.id];
+    const isActive = pt.mandatory ? true : pt.infoOnly ? true : (saved !== undefined ? saved.active : (pt.default ?? false));
+    if (!isActive) return '';
+    const time    = crewPointTime(rows, pt, month);
+    const timeEnd = pt.cpRefEnd ? crewPointTimeByRef(rows, pt.cpRefEnd, month) : null;
+    const notes   = saved?.notes ?? '';
+    const rule    = pt.ruleType   ? RULE_LABELS[pt.ruleType]      : null;
+    const terrain = pt.terrainTip ? TERRAIN_LABELS[pt.terrainTip] : null;
+    const badges  = [
+      rule    ? `<span class="print-badge">${rule.text}</span>`    : '',
+      terrain ? `<span class="print-badge">${terrain.text}</span>` : '',
+    ].join('');
+    const kmLabel = pt.kmEnd ? `km ${pt.km}–${pt.kmEnd}` : (pt.km > 0 ? `km ${pt.km}` : '');
+    const kmSpan  = kmLabel ? ` <span class="print-km">${kmLabel}</span>` : '';
+    const noteDiv = notes ? `<div class="print-notes">${notes}</div>` : '';
+    const gpsSpan = pt.lat ? `<span class="print-gps">${pt.lat.toFixed(5)}, ${pt.lon.toFixed(5)}</span>` : '';
+    const timeCell = timeEnd
+      ? `<span class="print-time-lbl">Enter</span>${time}<br><span class="print-time-lbl">Last</span>${timeEnd}`
+      : time;
+    return `<tr${pt.mandatory ? ' class="print-mandatory"' : ''}>
+      <td>${timeCell}</td>
+      <td><strong>${pt.name}</strong>${kmSpan}${badges}${gpsSpan}${noteDiv}</td>
+    </tr>`;
+  }
+
+  const bikeRows = CREW_POINTS.filter(p => p.seg === 'Bike').map(ptRow).filter(Boolean).join('');
+  const runRows  = CREW_POINTS.filter(p => p.seg === 'Run').map(ptRow).filter(Boolean).join('');
+
+  document.getElementById('crew-print-area').innerHTML = `
+    <div class="print-header">
+      <h1>⛰️ Norseman 2026 — Crew Schedule</h1>
+      <p>${mo} ${day}, ${year} &nbsp;·&nbsp; Start ${startStr} &nbsp;·&nbsp; Total ${formatHMS(totalSec)} &nbsp;·&nbsp; Est. finish ${finish}</p>
+    </div>
+    <div class="print-columns">
+      <div class="print-col">
+        <h2>🚴 Bike — 180 km</h2>
+        <p class="print-rule">No support km 0–36. Drive to Dyranut first. Park fully off road on the right.</p>
+        <table class="print-table"><tbody>${bikeRows}</tbody></table>
+      </div>
+      <div class="print-col">
+        <h2>🏃 Run — 42.2 km</h2>
+        <p class="print-rule">Car only km 0–25. Overtake within 30 sec. Foot support from km 25 (stay behind). Car directly to Stavsro from km 32.</p>
+        <table class="print-table"><tbody>${runRows}</tbody></table>
+      </div>
+    </div>
+    <p class="print-footer">norseman.palkamfjord.no &nbsp;·&nbsp; Weather: Yr.no / MET Norway &nbsp;·&nbsp; Race rules: Norseman manual v1.10</p>
+  `;
+  const prevTitle = document.title;
+  document.title = 'Support crew schedule';
+  window.print();
+  document.title = prevTitle;
+}
+
+function getCrewSchedule() {
+  const dateVal = document.getElementById('race-date').value;
+  if (!dateVal) { showError('Please select a race date.'); return; }
+
+  const [year, month, day] = dateVal.split('-').map(Number);
+  const planner = getPlanner();
+
+  if (planner.swimMin <= 0 || planner.bikeMin <= 0 || planner.runMin <= 0) {
+    showError('Please set a time for swim, bike, and run.');
+    return;
+  }
+
+  const totalSec = (planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec;
+  gtag('event', 'crew_schedule_requested', {
+    race_date: dateVal,
+    total_min: Math.round(totalSec / 60),
+  });
+
+  document.getElementById('error-msg').classList.add('hidden');
+  showView('crew');
+
+  const startUtc = raceStartUtc(year, month, day, planner.startHour, planner.startMin);
+  const rows     = buildRows(startUtc, planner);
+  renderCrewSchedule(rows, year, month, day, planner);
+}
+
 // ── UI init ───────────────────────────────────────────────────────────────────
 
-function makeOpts(id, min, max, defaultVal, pad = 2) {
-  const sel = document.getElementById(id);
-  for (let i = min; i <= max; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = String(i).padStart(pad, '0');
-    sel.appendChild(opt);
-  }
-  sel.value = defaultVal;
+function makeStepper(id, min, max, defaultVal, pad = 2) {
+  const container = document.getElementById(`stepper-${id}`);
+  const hidden    = document.getElementById(id);
+  if (!container || !hidden) return;
+
+  container.dataset.min = min;
+  container.dataset.max = max;
+  container.dataset.pad = pad;
+  hidden.value = defaultVal;
+
+  container.innerHTML =
+    `<button class="stepper-btn" type="button" data-dir="-1" aria-label="Decrease">−</button>` +
+    `<span class="stepper-val">${String(defaultVal).padStart(pad, '0')}</span>` +
+    `<button class="stepper-btn" type="button" data-dir="1" aria-label="Increase">+</button>`;
+
+  const decBtn = container.querySelector('[data-dir="-1"]');
+  const incBtn = container.querySelector('[data-dir="1"]');
+  decBtn.disabled = defaultVal <= min;
+  incBtn.disabled = defaultVal >= max;
+
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('.stepper-btn');
+    if (!btn || btn.disabled) return;
+    const curMin = parseInt(container.dataset.min);
+    const curMax = parseInt(container.dataset.max);
+    const curPad = parseInt(container.dataset.pad) || 2;
+    let val = parseInt(hidden.value) || 0;
+    val = Math.max(curMin, Math.min(curMax, val + parseInt(btn.dataset.dir)));
+    hidden.value = val;
+    container.querySelector('.stepper-val').textContent = String(val).padStart(curPad, '0');
+    container.querySelector('[data-dir="-1"]').disabled = val <= curMin;
+    container.querySelector('[data-dir="1"]').disabled  = val >= curMax;
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+  });
 }
 
 function restrictSwimMinutes() {
-  const h    = int('swim-h');
-  const mSel = document.getElementById('swim-m');
-  const curr = int('swim-m');
+  const h      = int('swim-h');
+  const newMax = h === 2 ? 15 : 59;
+  const mCont  = document.getElementById('stepper-swim-m');
+  const mHid   = document.getElementById('swim-m');
+  if (!mCont || !mHid) { updateTotal(); return; }
 
-  if (h === 2 && mSel.options.length > 16) {
-    mSel.innerHTML = '';
-    for (let m = 0; m <= 15; m++) {
-      const opt = document.createElement('option');
-      opt.value = m;
-      opt.textContent = String(m).padStart(2, '0');
-      mSel.appendChild(opt);
-    }
-    mSel.value = Math.min(curr, 15);
-  } else if (h < 2 && mSel.options.length <= 16) {
-    mSel.innerHTML = '';
-    for (let m = 0; m <= 59; m++) {
-      const opt = document.createElement('option');
-      opt.value = m;
-      opt.textContent = String(m).padStart(2, '0');
-      mSel.appendChild(opt);
-    }
-    mSel.value = curr;
+  mCont.dataset.max = newMax;
+  const curr = parseInt(mHid.value) || 0;
+  if (curr > newMax) {
+    mHid.value = newMax;
+    mCont.querySelector('.stepper-val').textContent = String(newMax).padStart(2, '0');
   }
+  mCont.querySelector('[data-dir="1"]').disabled = parseInt(mHid.value) >= newMax;
   updateTotal();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   // Defaults: swim 1:30 · T1 5min · bike 7:00 · T2 5min · run 6:30
-  makeOpts('swim-h', 0, 2, 1, 1);
-  makeOpts('swim-m', 0, 59, 30);
-  makeOpts('t1-m',   0, 59, 5);
-  makeOpts('t1-s',   0, 59, 0);
-  makeOpts('bike-h', 4, 15, 7, 1);
-  makeOpts('bike-m', 0, 59, 0);
-  makeOpts('t2-m',   0, 59, 5);
-  makeOpts('t2-s',   0, 59, 0);
-  makeOpts('run-h',  3, 18, 6, 1);
-  makeOpts('run-m',  0, 59, 30);
+  makeStepper('swim-h', 0, 2, 1, 1);
+  makeStepper('swim-m', 0, 59, 30);
+  makeStepper('t1-m',   0, 59, 5);
+  makeStepper('t1-s',   0, 59, 0);
+  makeStepper('bike-h', 4, 15, 7, 1);
+  makeStepper('bike-m', 0, 59, 0);
+  makeStepper('t2-m',   0, 59, 5);
+  makeStepper('t2-s',   0, 59, 0);
+  makeStepper('run-h',  3, 18, 6, 1);
+  makeStepper('run-m',  0, 59, 30);
 
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
@@ -1140,4 +1534,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('start-time').addEventListener('change', updateTotal);
   document.getElementById('get-forecast').addEventListener('click', getForecast);
+  document.getElementById('get-crew-schedule').addEventListener('click', getCrewSchedule);
 });
