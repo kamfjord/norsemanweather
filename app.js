@@ -969,8 +969,17 @@ async function getForecast() {
     total_min:  totalMin,
   });
 
+  const today    = new Date(); today.setHours(0, 0, 0, 0);
+  const raceDay  = new Date(year, month - 1, day);
+  const daysAhead = Math.round((raceDay - today) / 86_400_000);
+  if (daysAhead > 10) {
+    showInfo(`Yr.no provides forecasts up to 10 days ahead. Your selected date is ${daysAhead} days away — check back closer to race day.`);
+    return;
+  }
+
   document.getElementById('results').classList.add('hidden');
   document.getElementById('error-msg').classList.add('hidden');
+  document.getElementById('info-msg').classList.add('hidden');
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('get-forecast').disabled = true;
 
@@ -981,7 +990,7 @@ async function getForecast() {
     const swimLoc = SWIM[0]; // Erdal — swim start
     const swimStartUtcTime = startUtc;
 
-    const [enriched, oceanData] = await Promise.all([
+    const [firstPass, oceanData] = await Promise.all([
       Promise.all(rows.map(async row => {
         if (row.isTransition) return row;
         try {
@@ -989,15 +998,31 @@ async function getForecast() {
           const entry = closestEntry(data, row.time);
           return { ...row, entry };
         } catch {
-          return { ...row, entry: null };
+          return { ...row, entry: null, fetchFailed: true };
         }
       })),
       fetchOceanData(swimLoc.lat, swimLoc.lon).catch(() => null),
     ]);
 
+    // Retry checkpoints where the HTTP fetch failed, but only if some data
+    // came back (guards against silently retrying a "too far in future" date).
+    const someDataReturned = firstPass.some(r => !r.isTransition && r.entry !== null);
+    const enriched = someDataReturned && firstPass.some(r => r.fetchFailed)
+      ? await Promise.all(firstPass.map(async row => {
+          if (!row.fetchFailed) return row;
+          try {
+            const data  = await fetchWeather(row.cp.lat, row.cp.lon, row.cp.alt);
+            const entry = closestEntry(data, row.time);
+            return { ...row, entry, fetchFailed: false };
+          } catch {
+            return row;
+          }
+        }))
+      : firstPass;
+
     const anyData = enriched.some(r => !r.isTransition && r.entry !== null);
     if (!anyData) {
-      showError('No forecast available for that date yet — Yr.no provides forecasts ~9–10 days ahead.');
+      showInfo('No forecast data was returned for this date. If the date is within 10 days, try again in a moment.');
       return;
     }
 
@@ -1027,6 +1052,11 @@ function showError(msg) {
   const el = document.getElementById('error-msg');
   el.textContent = msg;
   el.classList.remove('hidden');
+}
+
+function showInfo(msg) {
+  document.getElementById('info-text').textContent = msg;
+  document.getElementById('info-msg').classList.remove('hidden');
 }
 
 // ── UI init ───────────────────────────────────────────────────────────────────

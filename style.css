@@ -327,6 +327,21 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
 
 .hidden { display: none !important; }
 
+/* ── Info / empty state ── */
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+}
+.info-icon { font-size: 1.4rem; line-height: 1; padding-top: 0.1rem; }
+.info-body strong { display: block; font-size: 0.9rem; margin-bottom: 0.25rem; }
+.info-body p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
 /* ── Race summary bar ── */
 .race-summary {
   background: #000;
