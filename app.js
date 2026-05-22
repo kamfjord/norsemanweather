@@ -375,13 +375,14 @@ const REF = [
 // ── Shirt predictor ───────────────────────────────────────────────────────────
 // Athlete counts per finish-hour group (matches REF order), pooled across 6 years.
 const HIST_COUNTS = [11, 48, 106, 145, 276, 312, 202, 92, 36];
-const HIST_YEARS  = 6;
+const HIST_TOTAL  = HIST_COUNTS.reduce((s, n) => s + n, 0); // 1228 across 6 years
+const FIELD_SIZE  = 300;
 const BLACK_SHIRT = 160;
 
 function predictShirt(finishSec) {
   let cum = 0;
   const cdf = HIST_COUNTS.map((n, i) => {
-    cum += n / HIST_YEARS;
+    cum += n / HIST_TOTAL * FIELD_SIZE;
     return { finish: REF[i].finish, cumulative: cum };
   });
   const total = Math.round(cum);
