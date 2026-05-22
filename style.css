@@ -254,11 +254,11 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   letter-spacing: 0.08em;
 }
 .shirt-black .shirt-label { color: #ffffff; }
-.shirt-border .shirt-label { color: #aaaaaa; }
-.shirt-white  .shirt-label { color: #666666; }
+.shirt-border .shirt-label { color: #ffffff; }
+.shirt-white  .shirt-label { color: #ffffff; }
 .shirt-pos {
   font-size: 0.72rem;
-  color: #555;
+  color: #aaaaaa;
   margin-left: auto;
 }
 
