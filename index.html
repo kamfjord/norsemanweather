@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Norseman Forecast</title>
+  <title>Norseman Race Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
   <header>
     <div class="header-inner">
       <div class="header-top">
-        <h1>⛰️ Norseman Forecast</h1>
+        <h1>⛰️ Norseman Race Planner</h1>
         <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme"></button>
       </div>
       <p>Xtreme Triathlon · Eidfjord → Gaustatoppen · 226 km</p>
@@ -59,8 +59,8 @@
             <span class="picon">🏊</span><span class="pname">Swim</span>
           </div>
           <div class="prow-inputs">
-            <select id="swim-h"></select><span class="unit">h</span>
-            <select id="swim-m"></select><span class="unit">min</span>
+            <div class="stepper" id="stepper-swim-h"></div><input type="hidden" id="swim-h" value="1"><span class="unit">h</span>
+            <div class="stepper" id="stepper-swim-m"></div><input type="hidden" id="swim-m" value="30"><span class="unit">min</span>
           </div>
           <div class="prow-note">Max 2:15</div>
         </div>
@@ -70,8 +70,8 @@
             <span class="picon">↕</span><span class="pname muted">T1</span>
           </div>
           <div class="prow-inputs">
-            <select id="t1-m"></select><span class="unit">min</span>
-            <select id="t1-s"></select><span class="unit">sec</span>
+            <div class="stepper" id="stepper-t1-m"></div><input type="hidden" id="t1-m" value="5"><span class="unit">min</span>
+            <div class="stepper" id="stepper-t1-s"></div><input type="hidden" id="t1-s" value="0"><span class="unit">sec</span>
           </div>
           <div class="prow-note"></div>
         </div>
@@ -81,8 +81,8 @@
             <span class="picon">🚴</span><span class="pname">Bike</span>
           </div>
           <div class="prow-inputs">
-            <select id="bike-h"></select><span class="unit">h</span>
-            <select id="bike-m"></select><span class="unit">min</span>
+            <div class="stepper" id="stepper-bike-h"></div><input type="hidden" id="bike-h" value="7"><span class="unit">h</span>
+            <div class="stepper" id="stepper-bike-m"></div><input type="hidden" id="bike-m" value="0"><span class="unit">min</span>
           </div>
           <div class="prow-note"></div>
         </div>
@@ -92,8 +92,8 @@
             <span class="picon">↕</span><span class="pname muted">T2</span>
           </div>
           <div class="prow-inputs">
-            <select id="t2-m"></select><span class="unit">min</span>
-            <select id="t2-s"></select><span class="unit">sec</span>
+            <div class="stepper" id="stepper-t2-m"></div><input type="hidden" id="t2-m" value="5"><span class="unit">min</span>
+            <div class="stepper" id="stepper-t2-s"></div><input type="hidden" id="t2-s" value="0"><span class="unit">sec</span>
           </div>
           <div class="prow-note"></div>
         </div>
@@ -103,8 +103,8 @@
             <span class="picon">🏃</span><span class="pname">Run</span>
           </div>
           <div class="prow-inputs">
-            <select id="run-h"></select><span class="unit">h</span>
-            <select id="run-m"></select><span class="unit">min</span>
+            <div class="stepper" id="stepper-run-h"></div><input type="hidden" id="run-h" value="6"><span class="unit">h</span>
+            <div class="stepper" id="stepper-run-m"></div><input type="hidden" id="run-m" value="30"><span class="unit">min</span>
           </div>
           <div class="prow-note"></div>
         </div>
@@ -123,7 +123,10 @@
 
       </div>
 
-      <button id="get-forecast" class="btn-primary">Get Weather Forecast</button>
+      <div class="action-btns">
+        <button id="get-forecast" class="btn-action">🌤 Weather Forecast</button>
+        <button id="get-crew-schedule" class="btn-action">👥 Crew Schedule</button>
+      </div>
     </div>
 
     <div id="error-msg" class="error hidden"></div>
@@ -138,6 +141,12 @@
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
       <p>Fetching weather data…</p>
+    </div>
+
+    <div id="crew-results" class="hidden">
+      <div class="card">
+        <div id="crew-body"></div>
+      </div>
     </div>
 
     <div id="results" class="hidden">
@@ -166,6 +175,7 @@
 
   </main>
 
+  <div id="crew-print-area"></div>
   <script src="app.js"></script>
 </body>
 </html>
