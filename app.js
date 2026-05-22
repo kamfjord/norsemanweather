@@ -413,7 +413,7 @@ function updateShirt(totalSec) {
   const pos   = document.getElementById('shirt-pos');
 
   bar.classList.remove('hidden', 'shirt-black', 'shirt-border', 'shirt-white');
-  pos.textContent = `est. ~${position} of ~300 finishers`;
+  pos.textContent = `est. ~${position} of ~220 finishers`;
 
   if (position <= BLACK_SHIRT - 25) {
     bar.classList.add('shirt-black');
@@ -1135,6 +1135,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(id).addEventListener('change', updateTotal);
   });
   document.getElementById('race-date').addEventListener('change', updateTotal);
+  document.getElementById('race-date').addEventListener('click', function() {
+    try { this.showPicker(); } catch (_) {}
+  });
   document.getElementById('start-time').addEventListener('change', updateTotal);
   document.getElementById('get-forecast').addEventListener('click', getForecast);
 });
