@@ -412,7 +412,7 @@ tr.seg-bike td { color: var(--bike); border-left: 3px solid var(--bike); }
 tr.seg-run  td { color: var(--run);  border-left: 3px solid var(--run);  }
 
 .water-temp-note { font-weight: 400; font-family: 'Inter', sans-serif; margin-left: 0.75rem; font-size: 0.78rem; display: inline-block; }
-.water-temp-note.current { font-size: 0.75rem; }
+.water-temp-note.current { font-size: 0.75rem; color: #ffffff; }
 
 /* Transition rows */
 tr.trans-row td {
