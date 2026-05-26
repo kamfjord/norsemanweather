@@ -141,6 +141,18 @@ main {
 /* ── Date group ── */
 .date-group { display: flex; flex-direction: column; gap: 0.4rem; }
 
+.date-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.date-hint::before {
+  content: 'ⓘ';
+  margin-right: 0.4em;
+  opacity: 0.7;
+}
+
 label {
   font-family: 'Oswald', sans-serif;
   font-size: 0.7rem;

@@ -37,6 +37,7 @@ const REF = [
       'Run - Atraa':                     _hms('6:29:39'),
       'Run - 10K':                       _hms('6:51:56'),
       'Run - Tinnsjø':                   _hms('7:14:01'),
+      'Run - 15K':                       _hms('7:19:24'),
       'Run - Miland':                    _hms('7:35:32'),
       'Run - Zombie Hill base':          _hms('7:59:15'),
       'Run - Zombie Hill 1st turn':      _hms('8:09:07'),
@@ -77,6 +78,7 @@ const REF = [
       'Run - Atraa':                     _hms('7:06:06'),
       'Run - 10K':                       _hms('7:27:46'),
       'Run - Tinnsjø':                   _hms('7:52:49'),
+      'Run - 15K':                       _hms('7:58:10'),
       'Run - Miland':                    _hms('8:14:14'),
       'Run - Zombie Hill base':          _hms('8:41:34'),
       'Run - Zombie Hill 1st turn':      _hms('8:52:52'),
@@ -117,6 +119,7 @@ const REF = [
       'Run - Atraa':                     _hms('7:42:06'),
       'Run - 10K':                       _hms('8:06:22'),
       'Run - Tinnsjø':                   _hms('8:32:41'),
+      'Run - 15K':                       _hms('8:38:47'),
       'Run - Miland':                    _hms('8:57:06'),
       'Run - Zombie Hill base':          _hms('9:24:27'),
       'Run - Zombie Hill 1st turn':      _hms('9:37:08'),
@@ -157,6 +160,7 @@ const REF = [
       'Run - Atraa':                     _hms('8:10:28'),
       'Run - 10K':                       _hms('8:37:14'),
       'Run - Tinnsjø':                   _hms('9:05:47'),
+      'Run - 15K':                       _hms('9:12:10'),
       'Run - Miland':                    _hms('9:31:18'),
       'Run - Zombie Hill base':          _hms('10:02:04'),
       'Run - Zombie Hill 1st turn':      _hms('10:16:06'),
@@ -197,6 +201,7 @@ const REF = [
       'Run - Atraa':                     _hms('8:48:54'),
       'Run - 10K':                       _hms('9:15:40'),
       'Run - Tinnsjø':                   _hms('9:46:37'),
+      'Run - 15K':                       _hms('9:52:56'),
       'Run - Miland':                    _hms('10:11:52'),
       'Run - Zombie Hill base':          _hms('10:46:14'),
       'Run - Zombie Hill 1st turn':      _hms('11:00:51'),
@@ -237,6 +242,7 @@ const REF = [
       'Run - Atraa':                     _hms('9:15:09'),
       'Run - 10K':                       _hms('9:47:53'),
       'Run - Tinnsjø':                   _hms('10:19:39'),
+      'Run - 15K':                       _hms('10:26:49'),
       'Run - Miland':                    _hms('10:48:18'),
       'Run - Zombie Hill base':          _hms('11:23:32'),
       'Run - Zombie Hill 1st turn':      _hms('11:38:29'),
@@ -277,6 +283,7 @@ const REF = [
       'Run - Atraa':                     _hms('9:56:08'),
       'Run - 10K':                       _hms('10:30:42'),
       'Run - Tinnsjø':                   _hms('11:07:02'),
+      'Run - 15K':                       _hms('11:15:27'),
       'Run - Miland':                    _hms('11:40:43'),
       'Run - Zombie Hill base':          _hms('12:25:34'),
       'Run - Zombie Hill 1st turn':      _hms('12:42:00'),
@@ -291,6 +298,8 @@ const REF = [
     },
   },
   {  // ~17h group: 92 athletes, median finish 16:55:10
+    // White-shirt course: finish is at Bygget (km 42.8), not Gaustatoppen.
+    // 'Run - 40K Mountain' omitted — these athletes turn off the black-summit route at Stavsro.
     finish: _hms('16:55:10'),
     splits: {
       'Swim finish':                     _hms('1:28:30'),
@@ -317,6 +326,7 @@ const REF = [
       'Run - Atraa':                     _hms('10:57:42'),
       'Run - 10K':                       _hms('11:35:12'),
       'Run - Tinnsjø':                   _hms('12:14:31'),
+      'Run - 15K':                       _hms('12:23:26'),
       'Run - Miland':                    _hms('12:50:11'),
       'Run - Zombie Hill base':          _hms('13:35:16'),
       'Run - Zombie Hill 1st turn':      _hms('13:53:39'),
@@ -326,11 +336,12 @@ const REF = [
       'Run - Zombie Hill 5th turn':      _hms('14:49:18'),
       'Run - Langefonn':           _hms('15:04:55'),
       'Run - Stavsro':                   _hms('16:00:47'),
-      'Run - 40K Mountain':              _hms('16:02:50'),
       'Finish':                          _hms('16:55:10'),
     },
   },
   {  // ~18h group: 36 athletes, median finish 17:54:02
+    // White-shirt course: finish is at Bygget (km 42.8), not Gaustatoppen.
+    // 'Run - 40K Mountain' omitted — these athletes turn off the black-summit route at Stavsro.
     finish: _hms('17:54:02'),
     splits: {
       'Swim finish':                     _hms('1:26:00'),
@@ -357,6 +368,7 @@ const REF = [
       'Run - Atraa':                     _hms('11:34:46'),
       'Run - 10K':                       _hms('12:17:42'),
       'Run - Tinnsjø':                   _hms('12:58:54'),
+      'Run - 15K':                       _hms('13:08:50'),
       'Run - Miland':                    _hms('13:38:36'),
       'Run - Zombie Hill base':          _hms('14:31:26'),
       'Run - Zombie Hill 1st turn':      _hms('14:49:26'),
@@ -366,7 +378,6 @@ const REF = [
       'Run - Zombie Hill 5th turn':      _hms('15:46:38'),
       'Run - Langefonn':           _hms('16:03:36'),
       'Run - Stavsro':                   _hms('16:58:09'),
-      'Run - 40K Mountain':              _hms('16:51:38'),
       'Finish':                          _hms('17:54:02'),
     },
   },
@@ -437,52 +448,46 @@ function updateShirt(totalSec) {
 
 const SWIM = [
   { name: 'Erdal',    km: 0,   lat: 60.467, lon: 6.978, alt: 0  },
-  { name: 'Eidfjord', km: 3.8, lat: 60.464, lon: 7.073, alt: 20, refKey: 'Swim finish' },
+  { name: 'Eidfjord', km: 3.8, lat: 60.468995, lon: 7.068480, alt: 20, refKey: 'Swim finish' },
 ];
 const SWIM_TOTAL = 3.8;
 
 const BIKE = [
-  { name: 'Eidfjord',          km: 0,   lat: 60.464, lon: 7.073, alt: 20,   refKey: 'Bike Start'             },
+  { name: 'Eidfjord',          km: 0,   lat: 60.468995, lon: 7.068480, alt: 20,   refKey: 'Bike Start'             },
   { name: 'Øvre Eidfjord',     km: 9,   lat: 60.442, lon: 7.108, alt: 280,  refKey: 'Bike - Øvre Eidfjord'   },
   { name: 'Enter Gamlevegen',  km: 12,  lat: 60.443, lon: 7.130, alt: 450,  refKey: 'Bike - Enter Gamlevegen'},
   { name: 'Vøringsfossen',     km: 17.5,lat: 60.433, lon: 7.215, alt: 900,  refKey: 'Bike - Vøringfossen'    },
   { name: 'Garen',             km: 20.5,lat: 60.410, lon: 7.248, alt: 1030, refKey: 'Bike - Garen'           },
   { name: 'Bjoreio',           km: 27,  lat: 60.407, lon: 7.350, alt: 1090, refKey: 'Bike - Bjoreio'         },
-  { name: 'Dyranut',           km: 36,  lat: 60.402, lon: 7.646, alt: 1253, refKey: 'Bike - Dyranut'         },
-  { name: 'Halne fjellstugu',  km: 47.8,lat: 60.485, lon: 7.810, alt: 1110, refKey: 'Bike - Halne'           },
-  { name: 'Haugastøl',         km: 68.7,lat: 60.514, lon: 7.869, alt: 988,  refKey: 'Bike - Haugastøl'       },
+  { name: 'Dyranut',           km: 36,  lat: 60.368226, lon: 7.503119, alt: 1253, refKey: 'Bike - Dyranut'         },
+  { name: 'Halne fjellstugu',  km: 47.8,lat: 60.41817464976513, lon: 7.685564762432003, alt: 1110, refKey: 'Bike - Halne'           },
+  { name: 'Haugastøl',         km: 68.7,lat: 60.512641, lon: 7.852904, alt: 988,  refKey: 'Bike - Haugastøl'       },
   { name: 'Ustaoset',          km: 78.7,lat: 60.508, lon: 8.018, alt: 990                                    },
-  { name: 'Geilo',             km: 90,  lat: 60.532, lon: 8.203, alt: 800,  refKey: 'Bike - Geilo'           },
-  { name: 'Kikut',             km: 98,  lat: 60.518, lon: 8.247, alt: 990,  refKey: 'Bike - Kikut'           },
+  { name: 'Geilo',             km: 90,  lat: 60.533694, lon: 8.208957, alt: 800,  refKey: 'Bike - Geilo'           },
+  { name: 'Kikut',             km: 98,  lat: 60.508185, lon: 8.231244, alt: 990,  refKey: 'Bike - Kikut'           },
   { name: 'Skurdalen',         km: 103, lat: 60.426, lon: 8.340, alt: 800,  refKey: 'Bike - Skurdalen'       },
   { name: 'Dagali',            km: 114, lat: 60.408, lon: 8.524, alt: 800,  refKey: 'Bike - Dagali'          },
-  { name: 'Vasstulan',         km: 125, lat: 60.330, lon: 8.475, alt: 820,  refKey: 'Bike - Vasstulan'       },
+  { name: 'Vasstulan',         km: 125, lat: 60.338701, lon: 8.496125, alt: 820,  refKey: 'Bike - Vasstulan'       },
   { name: 'Brostrud',          km: 129, lat: 60.290, lon: 8.510, alt: 700                                    },
-  { name: 'Start Imingfjell',  km: 135, lat: 60.240, lon: 8.550, alt: 780,  refKey: 'Bike - Start Imingfjell'},
+  { name: 'Start Imingfjell',  km: 135, lat: 60.265965, lon: 8.596927, alt: 780,  refKey: 'Bike - Start Imingfjell'},
   { name: 'Top Imingfjell',    km: 152, lat: 60.067, lon: 8.660, alt: 1280, refKey: 'Bike - Top Imingfjell'  },
-  { name: 'End Imingfjell',    km: 162, lat: 59.985, lon: 8.760, alt: 380,  refKey: 'Bike - End Imingfjell'  },
-  { name: 'Austbygde',         km: 180, lat: 59.920, lon: 8.887, alt: 190,  refKey: 'Bike - Austbygde'       },
+  { name: 'End Imingfjell',    km: 162, lat: 60.169877, lon: 8.596590, alt: 380,  refKey: 'Bike - End Imingfjell'  },
+  { name: 'Austbygde',         km: 180, lat: 59.988967, lon: 8.815289, alt: 190,  refKey: 'Bike - Austbygde'       },
 ];
 const BIKE_TOTAL = 180;
 
 const RUN = [
-  { name: 'Austbygde',          km: 0,    lat: 59.920, lon: 8.887, alt: 190,  refKey: 'Run start'                  },
-  { name: 'Atrå',               km: 5.6,  lat: 59.880, lon: 8.900, alt: 130,  refKey: 'Run - Atraa'                },
-  { name: '10K',                km: 10,   lat: 59.865, lon: 8.895, alt: 115,  refKey: 'Run - 10K'                  },
-  { name: 'Tinnsjø',            km: 13,   lat: 59.846, lon: 8.884, alt: 112,  refKey: 'Run - Tinnsjø'              },
-  { name: 'Mæl',                km: 16,   lat: 59.820, lon: 8.850, alt: 110                                        },
-  { name: 'Miland',             km: 18,   lat: 59.808, lon: 8.835, alt: 130,  refKey: 'Run - Miland'               },
-  { name: 'Dal kirke',          km: 24,   lat: 59.790, lon: 8.760, alt: 200                                        },
-  { name: 'Zombie Hill base',   km: 25,   lat: 59.790, lon: 8.750, alt: 210,  refKey: 'Run - Zombie Hill base'      },
-  { name: 'Zombie Hill 1st ↩',  km: 27,   lat: 59.797, lon: 8.730, alt: 320,  refKey: 'Run - Zombie Hill 1st turn' },
-  { name: 'Zombie Hill 2nd ↩',  km: 28,   lat: 59.804, lon: 8.710, alt: 470,  refKey: 'Run - Zombie Hill 2nd turn' },
-  { name: 'Zombie Hill 3rd ↩',  km: 29,   lat: 59.811, lon: 8.692, alt: 610,  refKey: 'Run - Zombie Hill 3rd turn' },
-  { name: 'Zombie Hill 4th ↩',  km: 30,   lat: 59.818, lon: 8.674, alt: 760,  refKey: 'Run - Zombie Hill 4th turn' },
-  { name: 'Zombie Hill 5th ↩',  km: 30.5, lat: 59.821, lon: 8.667, alt: 850,  refKey: 'Run - Zombie Hill 5th turn' },
-  { name: 'Langefonn',          km: 32,   lat: 59.830, lon: 8.662, alt: 940,  refKey: 'Run - Langefonn'            },
-  { name: 'Stavsro',            km: 37,   lat: 59.855, lon: 8.668, alt: 1000, refKey: 'Run - Stavsro'              },
+  { name: 'Austbygde',          km: 0,    lat: 59.988967, lon: 8.815289, alt: 190,  refKey: 'Run start'                  },
+  { name: 'Atrå',               km: 5.4,  lat: 59.988137, lon: 8.735603, alt: 130,  refKey: 'Run - Atraa'                },
+  { name: '10K',                km: 10,   lat: 59.970834, lon: 8.801363, alt: 115,  refKey: 'Run - 10K'                  },
+  { name: '15K',                km: 15,   lat: 59.933994, lon: 8.805185, alt: 110,  refKey: 'Run - 15K'                  },
+  { name: 'Miland',             km: 18,   lat: 59.922815, lon: 8.747627, alt: 130,  refKey: 'Run - Miland'               },
+  { name: '20K',                km: 20,   lat: 59.919181, lon: 8.734241, alt: 130,  refKey: 'Run - 20K'                  },
+  { name: 'Zombie Hill base',   km: 25,   lat: 59.882192, lon: 8.675747, alt: 210,  refKey: 'Run - Zombie Hill base'      },
+  { name: 'Langefonn',          km: 32,   lat: 59.868957, lon: 8.688487, alt: 940,  refKey: 'Run - Langefonn'            },
+  { name: 'Stavsro',            km: 37,   lat: 59.834298, lon: 8.714001, alt: 1000, refKey: 'Run - Stavsro'              },
   { name: '40K Mountain',       km: 40,   lat: 59.849, lon: 8.652, alt: 1600, refKey: 'Run - 40K Mountain'         },
-  { name: 'Gaustatoppen',       km: 42.2, lat: 59.850, lon: 8.650, alt: 1883, refKey: 'Finish'                     },
+  { name: 'Gaustatoppen',       km: 42.2, lat: 59.850528, lon: 8.655781, alt: 1883, refKey: 'Finish'                     },
 ];
 const RUN_TOTAL = 42.2;
 
@@ -601,6 +606,39 @@ function interpRef(finishSec, cpName) {
   return Math.round(loV + t * (hiV - loV));
 }
 
+// Given the user's actual leg duration, find the synthetic finish time whose
+// REF group has a matching leg duration. Letting each leg pick its own anchor
+// prevents a strong-on-bike / weak-on-climb athlete from being modelled with
+// the median pace shape of their overall finish bucket.
+function anchorForLegDuration(legSec, startKey, endKey) {
+  const pts = REF
+    .map(r => {
+      const s = r.splits[startKey], e = r.splits[endKey];
+      if (s == null || e == null) return null;
+      return { finish: r.finish, legSec: e - s };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.legSec - b.legSec);
+
+  if (pts.length < 2) return null;
+  if (legSec <= pts[0].legSec) {
+    const t = (legSec - pts[0].legSec) / (pts[1].legSec - pts[0].legSec);
+    return Math.round(pts[0].finish + t * (pts[1].finish - pts[0].finish));
+  }
+  const n = pts.length;
+  if (legSec >= pts[n-1].legSec) {
+    const t = (legSec - pts[n-2].legSec) / (pts[n-1].legSec - pts[n-2].legSec);
+    return Math.round(pts[n-2].finish + t * (pts[n-1].finish - pts[n-2].finish));
+  }
+  for (let i = 0; i < n - 1; i++) {
+    if (pts[i].legSec <= legSec && legSec <= pts[i+1].legSec) {
+      const t = (legSec - pts[i].legSec) / (pts[i+1].legSec - pts[i].legSec);
+      return Math.round(pts[i].finish + t * (pts[i+1].finish - pts[i].finish));
+    }
+  }
+  return null;
+}
+
 // Computes a time fraction [0..1] within a segment for each checkpoint.
 // Checkpoints with a refKey use historical data; others are interpolated
 // linearly by km between their nearest refKey neighbours.
@@ -642,6 +680,42 @@ function computeSegFracs(finishSec, checkpoints, startKey, endKey) {
     if (hi.km === lo.km) return lo.frac;
     return lo.frac + (cp.km - lo.km) / (hi.km - lo.km) * (hi.frac - lo.frac);
   });
+}
+
+// Two-anchor run model. The flat sub-leg (Run start → Stavsro) borrows its
+// pace shape from the bike anchor, since athletes who bike fast tend to be
+// strong on the flat run as well. The climb sub-leg (Stavsro → Finish) uses
+// the run anchor, which captures how the athlete actually fades on the wall.
+// We then rescale so flat + climb equals the user's actual run duration.
+function computeRunFracs(bikeAnchor, runAnchor, runTotalSec) {
+  const flatPred  = (interpRef(bikeAnchor, 'Run - Stavsro') ?? 0)
+                  - (interpRef(bikeAnchor, 'Run start')     ?? 0);
+  const climbPred = (interpRef(runAnchor,  'Finish')        ?? 0)
+                  - (interpRef(runAnchor,  'Run - Stavsro') ?? 0);
+
+  const stavsroIdx = RUN.findIndex(cp => cp.refKey === 'Run - Stavsro');
+  if (stavsroIdx < 0 || flatPred <= 0 || climbPred <= 0 || runTotalSec <= 0) {
+    return computeSegFracs(runAnchor, RUN, 'Run start', 'Finish');
+  }
+
+  const sumPred  = flatPred + climbPred;
+  const flatSec  = runTotalSec * (flatPred / sumPred);
+  const flatFrac = flatSec / runTotalSec;
+
+  const flatCps  = RUN.slice(0, stavsroIdx + 1);
+  const climbCps = RUN.slice(stavsroIdx);
+
+  const flatFracs  = computeSegFracs(bikeAnchor, flatCps,  'Run start',     'Run - Stavsro');
+  const climbFracs = computeSegFracs(runAnchor,  climbCps, 'Run - Stavsro', 'Finish');
+
+  const fracs = new Array(RUN.length);
+  for (let i = 0; i < flatCps.length; i++) {
+    fracs[i] = flatFracs[i] * flatFrac;
+  }
+  for (let i = 1; i < climbCps.length; i++) {
+    fracs[stavsroIdx + i] = flatFrac + climbFracs[i] * (1 - flatFrac);
+  }
+  return fracs;
 }
 
 // ── Planner ───────────────────────────────────────────────────────────────────
@@ -693,12 +767,17 @@ function buildRows(swimStartUtc, planner) {
   const bikeEndUtc   = new Date(bikeStartUtc.getTime() + bikeMs);
   const runStartUtc  = new Date(bikeEndUtc.getTime()   + t2Ms);
 
-  // Total finish time drives historical interpolation
   const totalSec = (swimMin + bikeMin + runMin) * 60 + t1Sec + t2Sec;
 
-  // Historical fractions within each segment (0 = segment start, 1 = segment end)
-  const bikeFracs = computeSegFracs(totalSec, BIKE, 'Bike Start', 'Bike finish');
-  const runFracs  = computeSegFracs(totalSec, RUN,  'Run start',  'Finish');
+  // Per-leg anchors: pick the REF group whose leg duration matches the user's,
+  // so the intra-leg pace shape reflects their strength on that leg rather
+  // than the median pacing for their overall finish bucket. Falls back to
+  // totalSec if the leg duration is outside the historical range.
+  const bikeAnchor = anchorForLegDuration(bikeMin * 60, 'Bike Start', 'Bike finish') ?? totalSec;
+  const runAnchor  = anchorForLegDuration(runMin  * 60, 'Run start',  'Finish')      ?? totalSec;
+
+  const bikeFracs = computeSegFracs(bikeAnchor, BIKE, 'Bike Start', 'Bike finish');
+  const runFracs  = computeRunFracs(bikeAnchor, runAnchor, runMin * 60);
 
   const rows = [];
 
@@ -740,27 +819,66 @@ function buildRows(swimStartUtc, planner) {
 
 // ── Weather ───────────────────────────────────────────────────────────────────
 
+const _inflight = {};
+
+async function mapWithLimit(items, limit, fn) {
+  const results = new Array(items.length);
+  let idx = 0;
+  async function worker() {
+    while (idx < items.length) {
+      const i = idx++;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  const workers = Array.from({ length: Math.min(limit, items.length) }, () => worker());
+  await Promise.all(workers);
+  return results;
+}
+
+async function fetchJsonWithRetry(url, { retries = 3, okOnly = true } = {}) {
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        if (!okOnly && res.status === 404) return null;
+        throw new Error(`API ${res.status}`);
+      }
+      return await res.json();
+    } catch (err) {
+      lastErr = err;
+      if (attempt === retries) break;
+      const delay = 400 * Math.pow(2, attempt) + Math.random() * 200;
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw lastErr;
+}
+
 async function fetchWeather(lat, lon, alt) {
   const key = `${lat},${lon}`;
   if (cache[key]) return cache[key];
+  if (_inflight[key]) return _inflight[key];
+
   const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact` +
               `?lat=${lat}&lon=${lon}&altitude=${alt}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`API ${res.status}`);
-  const data = await res.json();
-  cache[key] = data;
-  return data;
+  _inflight[key] = fetchJsonWithRetry(url)
+    .then(data => { cache[key] = data; return data; })
+    .finally(() => { delete _inflight[key]; });
+  return _inflight[key];
 }
 
 async function fetchOceanData(lat, lon) {
   const key = `ocean:${lat},${lon}`;
   if (cache[key]) return cache[key];
+  if (_inflight[key]) return _inflight[key];
+
   const url = `https://api.met.no/weatherapi/oceanforecast/2.0/complete?lat=${lat}&lon=${lon}`;
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const data = await res.json();
-  cache[key] = data;
-  return data;
+  _inflight[key] = fetchJsonWithRetry(url, { okOnly: false })
+    .then(data => { if (data) cache[key] = data; return data; })
+    .catch(() => null)
+    .finally(() => { delete _inflight[key]; });
+  return _inflight[key];
 }
 
 function closestEntry(data, targetTime) {
@@ -1002,8 +1120,8 @@ async function getForecast() {
     const swimLoc = SWIM[0]; // Erdal — swim start
     const swimStartUtcTime = startUtc;
 
-    const [firstPass, oceanData] = await Promise.all([
-      Promise.all(rows.map(async row => {
+    const [enriched, oceanData] = await Promise.all([
+      mapWithLimit(rows, 6, async row => {
         if (row.isTransition) return row;
         try {
           const data  = await fetchWeather(row.cp.lat, row.cp.lon, row.cp.alt);
@@ -1012,25 +1130,9 @@ async function getForecast() {
         } catch {
           return { ...row, entry: null, fetchFailed: true };
         }
-      })),
+      }),
       fetchOceanData(swimLoc.lat, swimLoc.lon).catch(() => null),
     ]);
-
-    // Retry checkpoints where the HTTP fetch failed, but only if some data
-    // came back (guards against silently retrying a "too far in future" date).
-    const someDataReturned = firstPass.some(r => !r.isTransition && r.entry !== null);
-    const enriched = someDataReturned && firstPass.some(r => r.fetchFailed)
-      ? await Promise.all(firstPass.map(async row => {
-          if (!row.fetchFailed) return row;
-          try {
-            const data  = await fetchWeather(row.cp.lat, row.cp.lon, row.cp.alt);
-            const entry = closestEntry(data, row.time);
-            return { ...row, entry, fetchFailed: false };
-          } catch {
-            return row;
-          }
-        }))
-      : firstPass;
 
     const anyData = enriched.some(r => !r.isTransition && r.entry !== null);
     if (!anyData) {
@@ -1071,6 +1173,37 @@ function showInfo(msg) {
   document.getElementById('info-msg').classList.remove('hidden');
 }
 
+function checkDateRange() {
+  const hint    = document.getElementById('date-hint');
+  const dateVal = document.getElementById('race-date').value;
+  const timeVal = document.getElementById('start-time').value || '05:00';
+  if (!hint || !dateVal) { if (hint) hint.classList.add('hidden'); return; }
+
+  const [y, mo, d] = dateVal.split('-').map(Number);
+  const [h, mi]    = timeVal.split(':').map(Number);
+  const start      = new Date(y, mo - 1, d, h, mi);
+  const now        = new Date();
+  const today      = new Date(); today.setHours(0, 0, 0, 0);
+  const raceDay    = new Date(y, mo - 1, d);
+  const daysAhead  = Math.round((raceDay - today) / 86_400_000);
+
+  let msg = '';
+  if (daysAhead < 0) {
+    msg = 'Selected date is in the past — pick a future date for a forecast.';
+  } else if (daysAhead === 0 && start <= now) {
+    msg = `Start time ${timeVal} has already passed today — forecast will be limited.`;
+  } else if (daysAhead > 10) {
+    msg = `Yr.no only forecasts up to 10 days ahead — your date is ${daysAhead} days away.`;
+  }
+
+  if (msg) {
+    hint.textContent = msg;
+    hint.classList.remove('hidden');
+  } else {
+    hint.classList.add('hidden');
+  }
+}
+
 // ── Support crew schedule ─────────────────────────────────────────────────────
 // Support rules per race manual:
 //  Bike: no support km 0–36; open support km 36–142 (Imingfjell dam); T2 at km 180
@@ -1091,71 +1224,72 @@ function showInfo(msg) {
 const CREW_POINTS = [
   // ── Bike ──
   { id: 'b-t1',        seg: 'Bike', name: 'T1 — Eidfjord',    cpRef: 'T1-transition',          km: 0,
-    lat: 60.4683,    lon: 7.07024,
+    lat: 60.468995,  lon: 7.068480,
     mandatory: true,  ruleType: 'transition',
-    ruleText: '1 support member allowed · Wait at swim exit first, then enter T1 together' },
+    ruleText: '1 support member allowed in T1 with Athlete. · Wait at swim exit first, then enter T1 together' },
   { id: 'b-dyranut',   seg: 'Bike', name: 'Dyranut',          cpRef: 'Bike:Dyranut',           km: 36,
-    lat: 60.402,     lon: 7.646,
+    lat: 60.368226, lon: 7.503119,
     default: true,    ruleType: 'first',    terrainTip: 'climb',
     ruleText: 'First allowed bike support · No support before here · Rider climbing — good timing for crew handoff' },
   { id: 'b-halne',     seg: 'Bike', name: 'Halne fjellstugu', cpRef: 'Bike:Halne fjellstugu', km: 47.8,
-    lat: 60.485,     lon: 7.810,
-    default: true,    terrainTip: 'descend',
-    ruleText: 'Rider descending from Dyranut plateau — has gained speed, time your stop well' },
+    lat: 60.41817464976513, lon: 7.685564762432003,
+    default: true,    terrainTip: 'descend' },
   { id: 'b-haugastol', seg: 'Bike', name: 'Haugastøl',        cpRef: 'Bike:Haugastøl',         km: 68.7,
-    lat: 60.514,     lon: 7.869,
-    default: true,    terrainTip: 'descend',
-    ruleText: 'Rider on net descent from plateau' },
+    lat: 60.512641, lon: 7.852904,
+    default: true,    terrainTip: 'descend' },
   { id: 'b-geilo',     seg: 'Bike', name: 'Geilo',            cpRef: 'Bike:Geilo',              km: 90,
-    lat: 60.532,     lon: 8.203,
+    lat: 60.533694, lon: 8.208957,
     infoOnly: true,  terrainTip: 'descend',
     ruleText: 'Avoid stopping here unless absolutely necessary — riders descend the plateau at high speed and may fly through Geilo before you even spot them.' },
   { id: 'b-kikut',     seg: 'Bike', name: 'Kikut',            cpRef: 'Bike:Kikut',              km: 98,
-    lat: 60.518,     lon: 8.247,
+    lat: 60.508185, lon: 8.231244,
     default: true,    terrainTip: 'climb',
     ruleText: 'Rider climbs 190m from Geilo — slowest speed on this section, good window for crew handoff' },
   { id: 'b-vasstulan', seg: 'Bike', name: 'Vasstulan',        cpRef: 'Bike:Vasstulan',          km: 125,
-    lat: 60.330,     lon: 8.475,
+    lat: 60.338701, lon: 8.496125,
     default: true,    terrainTip: 'flat',
     ruleText: 'Slight uphill — manageable pace for crew timing' },
   { id: 'b-imingfjell',seg: 'Bike', name: 'Imingfjell climb', cpRef: 'Bike:Start Imingfjell',  km: 135,
     cpRefEnd: 'Bike:Imingfjell-dam',  kmEnd: 142,
-    lat: 60.240,     lon: 8.550,
+    lat: 60.234450, lon: 8.585943,
     default: true,    ruleType: 'warning',  terrainTip: 'climb',  isClimbZone: true,
     ruleText: '500m ascent — rider at slowest pace of bike leg · Last support at km 142 (red flags mark end) · After last support drive directly to T2' },
   { id: 'b-t2',        seg: 'Bike', name: 'T2 — Austbygde',  cpRef: 'T2-transition',           km: 180,
-    lat: 59.920,     lon: 8.887,
+    lat: 59.988967, lon: 8.815289,
     mandatory: true,  ruleType: 'transition',
     ruleText: 'Both crew members allowed · Prepare run gear · Pick up bike as soon as athlete departs' },
   // ── Run ──
-  { id: 'r-ataa',      seg: 'Run',  name: 'Atrå',             cpRef: 'Run:Atrå',                km: 5.6,
+  { id: 'r-ataa',      seg: 'Run',  name: 'Atrå',             cpRef: 'Run:Atrå',                km: 5.4,
     default: true,    ruleType: 'car',
     ruleText: 'Car support only · Drive ahead, must overtake within 30 sec · No foot support' },
   { id: 'r-10k',       seg: 'Run',  name: '10K',              cpRef: 'Run:10K',                 km: 10,
     default: true,    ruleType: 'car',
     ruleText: 'Car support only · No foot support' },
-  { id: 'r-tinnsjoe',  seg: 'Run',  name: 'Tinnsjø',          cpRef: 'Run:Tinnsjø',             km: 13,
+  { id: 'r-15k',       seg: 'Run',  name: '15K',              cpRef: 'Run:15K',                 km: 15,
     default: true,    ruleType: 'car',
     ruleText: 'Car support only · No foot support' },
   { id: 'r-miland',    seg: 'Run',  name: 'Miland',           cpRef: 'Run:Miland',              km: 18,
     default: true,    ruleType: 'car',
     ruleText: 'Car support only · No foot support' },
+  { id: 'r-20k',       seg: 'Run',  name: '20K',              cpRef: 'Run:20K',                 km: 20,
+    default: true,    ruleType: 'car',
+    ruleText: 'Car support only · No foot support' },
   { id: 'r-zombie',    seg: 'Run',  name: 'Zombie Hill base', cpRef: 'Run:Zombie Hill base',    km: 25,
-    lat: 59.790,     lon: 8.750,
+    lat: 59.882192, lon: 8.675747,
     default: true,    ruleType: 'foot',
     ruleText: 'Foot support begins · Must stay BEHIND athlete — running ahead = pacing penalty' },
   { id: 'r-langefonn', seg: 'Run',  name: 'Langefonn',        cpRef: 'Run:Langefonn',           km: 32,
-    lat: 59.830,     lon: 8.662,
+    lat: 59.868957, lon: 8.688487,
     mandatory: true,  ruleType: 'last-car',
-    ruleText: 'Last car stop · Car must drive directly to Stavsro — no stops allowed between here and Stavsro · Only 1 crew member on foot from here · White-course cut-off: 16h 30min' },
+    ruleText: 'Last car stop · Car must drive directly to Stavsro — no stops allowed between here and Stavsro · White-course cut-off: 16h 30min' },
   { id: 'r-stavsro',   seg: 'Run',  name: 'Stavsro',          cpRef: 'Run:Stavsro',             km: 37,
-    lat: 59.855,     lon: 8.668,
+    lat: 59.834298, lon: 8.714001,
     mandatory: true,  ruleType: 'mandatory',
-    ruleText: 'ALL cars must park here · Black shirt cut-off: first 160 athletes (regardless of mountain status) · No summit after 14h 30min · White-course cut-off: 17h 45min · White finishers continue to Bygget (42.8 km) instead of summit · 1 crew member joins athlete for summit · Mandatory backpack from here' },
+    ruleText: 'ALL cars must park here · Black shirt cut-off: first 160 athletes (regardless of mountain status) · No summit after 14h 30min race time · White-course cut-off: 17h 45min · White finishers continue to Bygget (42.8 km) instead of summit · 1 crew member joins athlete for summit · Mandatory backpack from here' },
   { id: 'r-gausta',    seg: 'Run',  name: 'Gaustatoppen (black finish)', cpRef: 'Run:Gaustatoppen', km: 42.2,
-    lat: 59.850,     lon: 8.650,
+    lat: 59.850528, lon: 8.655781,
     mandatory: true,  ruleType: 'mandatory',
-    ruleText: 'Mandatory backpack for both athlete and support · Crew must be with athlete at finish line' },
+    ruleText: 'Mandatory backpack for both athlete and support · 1 support from crew must be with athlete at finish line' },
   { id: 'r-bygget',    seg: 'Run',  name: 'Bygget (white finish)', cpRef: 'Run:Bygget',          km: 42.8,
     infoOnly: true,
     ruleText: 'White-course finish line · Cut-off 18h 45min · Support not mandatory, but if joining must carry mandatory backpack' },
@@ -1526,16 +1660,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
   document.getElementById('race-date').value = tomorrow.toISOString().slice(0, 10);
   updateTotal();
+  checkDateRange();
 
   document.getElementById('swim-h').addEventListener('change', restrictSwimMinutes);
   ['swim-h','swim-m','t1-m','t1-s','bike-h','bike-m','t2-m','t2-s','run-h','run-m'].forEach(id => {
     document.getElementById(id).addEventListener('change', updateTotal);
   });
-  document.getElementById('race-date').addEventListener('change', updateTotal);
+  document.getElementById('race-date').addEventListener('change', () => { updateTotal(); checkDateRange(); });
   document.getElementById('race-date').addEventListener('click', function() {
     try { this.showPicker(); } catch (_) {}
   });
-  document.getElementById('start-time').addEventListener('change', updateTotal);
+  document.getElementById('start-time').addEventListener('change', () => { updateTotal(); checkDateRange(); });
   document.getElementById('get-forecast').addEventListener('click', getForecast);
   document.getElementById('get-crew-schedule').addEventListener('click', getCrewSchedule);
 });
