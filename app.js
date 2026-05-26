@@ -1589,28 +1589,106 @@ function makeStepper(id, min, max, defaultVal, pad = 2) {
 
   container.innerHTML =
     `<button class="stepper-btn" type="button" data-dir="-1" aria-label="Decrease">−</button>` +
-    `<span class="stepper-val">${String(defaultVal).padStart(pad, '0')}</span>` +
+    `<input class="stepper-val" type="tel" inputmode="numeric" pattern="[0-9]*" ` +
+      `autocomplete="off" autocorrect="off" spellcheck="false" ` +
+      `value="${String(defaultVal).padStart(pad, '0')}" aria-label="Value">` +
     `<button class="stepper-btn" type="button" data-dir="1" aria-label="Increase">+</button>`;
 
   const decBtn = container.querySelector('[data-dir="-1"]');
   const incBtn = container.querySelector('[data-dir="1"]');
-  decBtn.disabled = defaultVal <= min;
-  incBtn.disabled = defaultVal >= max;
+  const input  = container.querySelector('.stepper-val');
 
-  container.addEventListener('click', e => {
-    const btn = e.target.closest('.stepper-btn');
-    if (!btn || btn.disabled) return;
+  function setVal(v) {
     const curMin = parseInt(container.dataset.min);
     const curMax = parseInt(container.dataset.max);
     const curPad = parseInt(container.dataset.pad) || 2;
-    let val = parseInt(hidden.value) || 0;
-    val = Math.max(curMin, Math.min(curMax, val + parseInt(btn.dataset.dir)));
-    hidden.value = val;
-    container.querySelector('.stepper-val').textContent = String(val).padStart(curPad, '0');
-    container.querySelector('[data-dir="-1"]').disabled = val <= curMin;
-    container.querySelector('[data-dir="1"]').disabled  = val >= curMax;
+    v = Math.max(curMin, Math.min(curMax, v));
+    hidden.value = v;
+    input.value = String(v).padStart(curPad, '0');
+    decBtn.disabled = v <= curMin;
+    incBtn.disabled = v >= curMax;
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  setVal(defaultVal);
+
+  // Tap-to-type: select all on focus so typing replaces the current value.
+  // Force focus on touchend in case nearby pointer/touch handlers swallow it.
+  input.addEventListener('focus', () => input.select());
+  input.addEventListener('touchend', e => {
+    if (document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  }, { passive: false });
+  input.addEventListener('input', () => {
+    const digits = input.value.replace(/[^\d]/g, '');
+    if (digits === '') return;
+    const curMin = parseInt(container.dataset.min);
+    const curMax = parseInt(container.dataset.max);
+    let v = parseInt(digits, 10);
+    if (v > curMax) v = curMax;
+    if (v < curMin && digits.length >= String(curMax).length) v = curMin;
+    hidden.value = v;
     hidden.dispatchEvent(new Event('change', { bubbles: true }));
   });
+  input.addEventListener('blur', () => setVal(parseInt(input.value, 10) || 0));
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')      { e.preventDefault(); input.blur(); }
+    else if (e.key === 'ArrowUp')   { e.preventDefault(); setVal((parseInt(hidden.value) || 0) + 1); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); setVal((parseInt(hidden.value) || 0) - 1); }
+  });
+
+  // +/- with hold-to-accelerate. After 350ms, repeat at 150ms cadence
+  // and ramp to 50ms. iOS Safari's Pointer Events are unreliable for
+  // long-press (the browser sometimes fires pointercancel mid-hold), so
+  // we use explicit touch + mouse handlers instead.
+  function bindRepeat(btn, dir) {
+    let holdTimer, repeatTimer, ticks, active = false, suppressMouseUntil = 0;
+    const step = () => {
+      if (!active || btn.disabled) { stop(); return; }
+      setVal((parseInt(hidden.value) || 0) + dir);
+      ticks++;
+      const next = ticks < 10 ? 150 : ticks < 25 ? 90 : 50;
+      repeatTimer = setTimeout(step, next);
+    };
+    const stop = () => {
+      active = false;
+      clearTimeout(holdTimer); clearTimeout(repeatTimer);
+      holdTimer = repeatTimer = null;
+    };
+    const start = () => {
+      if (btn.disabled) return;
+      active = true;
+      setVal((parseInt(hidden.value) || 0) + dir);
+      ticks = 0;
+      holdTimer = setTimeout(() => { ticks = 0; step(); }, 350);
+    };
+
+    btn.addEventListener('touchstart', e => {
+      e.preventDefault();
+      suppressMouseUntil = Date.now() + 600;
+      start();
+    }, { passive: false });
+    btn.addEventListener('touchend', e => {
+      e.preventDefault();
+      stop();
+    }, { passive: false });
+    btn.addEventListener('touchcancel', stop);
+
+    btn.addEventListener('mousedown', e => {
+      if (Date.now() < suppressMouseUntil) return;
+      e.preventDefault();
+      start();
+    });
+    btn.addEventListener('mouseup', stop);
+    btn.addEventListener('mouseleave', stop);
+
+    btn.addEventListener('contextmenu', e => e.preventDefault());
+    btn.addEventListener('click', e => e.preventDefault());
+  }
+  bindRepeat(decBtn, -1);
+  bindRepeat(incBtn, +1);
 }
 
 function restrictSwimMinutes() {
@@ -1624,7 +1702,7 @@ function restrictSwimMinutes() {
   const curr = parseInt(mHid.value) || 0;
   if (curr > newMax) {
     mHid.value = newMax;
-    mCont.querySelector('.stepper-val').textContent = String(newMax).padStart(2, '0');
+    mCont.querySelector('.stepper-val').value = String(newMax).padStart(2, '0');
   }
   mCont.querySelector('[data-dir="1"]').disabled = parseInt(mHid.value) >= newMax;
   updateTotal();

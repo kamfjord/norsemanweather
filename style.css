@@ -253,6 +253,10 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
   flex-shrink: 0;
   line-height: 1;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .stepper-btn:hover:not(:disabled) {
   background: var(--surface);
@@ -264,19 +268,38 @@ input[type="time"]:focus { outline: none; border-color: var(--accent); }
 .stepper-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 .stepper-val {
   font-family: 'Oswald', sans-serif;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text);
-  min-width: 2rem;
+  width: 2.6rem;
+  min-width: 2.6rem;
   text-align: center;
   padding: 0 0.1rem;
   letter-spacing: 0.02em;
+  border: none;
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
   height: 2.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  line-height: 2.1rem;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: text;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.stepper-val:focus {
+  background: var(--surface);
+  color: var(--accent);
+}
+.stepper-val::-webkit-outer-spin-button,
+.stepper-val::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .unit {
@@ -911,6 +934,6 @@ td.num { font-variant-numeric: tabular-nums; }
   .prow-note { display: none; }
   .total-finish { margin-left: 0; }
   .crew-time { font-size: 1rem; }
-  .stepper-btn { width: 1.75rem; }
-  .stepper-val { min-width: 1.6rem; }
+  .stepper-btn { width: 2.1rem; }
+  .stepper-val { width: 2.4rem; min-width: 2.4rem; font-size: 16px; }
 }
