@@ -914,6 +914,51 @@ function windArrow(fromDeg, routeBearing, windSpeed) {
   return `<span class="wind-arrow ${cls}" style="transform:rotate(${rotation}deg)">↑</span>`;
 }
 
+// Wind-direction classification (no HTML). Always direction-based — speed only affects intensity.
+function windRelClass(fromDeg, routeBearing) {
+  if (fromDeg == null) return 'unknown';
+  const windTo = (fromDeg + 180) % 360;
+  const diff   = ((windTo - routeBearing + 540) % 360) - 180;
+  if (Math.abs(diff) <= 45)  return 'tail';
+  if (Math.abs(diff) >= 135) return 'head';
+  return 'cross';
+}
+
+// Background tint: very faint at calm, deeply saturated at ≥18 m/s (gale).
+// Power curve (exp 1.3) widens the gap between light and strong winds.
+function windChipTint(cls, speed) {
+  if (cls === 'unknown') return 'rgba(127,127,127,0.10)';
+  const t = Math.max(0, Math.min(1, (speed ?? 0) / 18));
+  const a = (0.06 + Math.pow(t, 1.3) * 0.74).toFixed(3);
+  const rgb = cls === 'tail' ? '42,122,48'
+            : cls === 'head' ? '184,48,48'
+            :                  '138,96,32';   // cross
+  return `rgba(${rgb},${a})`;
+}
+
+// Pill-chip rendering: arrow + speed + TAIL/CROSS/HEAD/CALM tag.
+// Hue from direction, intensity from speed. <2 m/s shows "CALM" but keeps direction hue.
+function windChipHtml(fromDeg, routeBearing, windSpeed) {
+  if (fromDeg == null && windSpeed == null) return '—';
+  const cls = windRelClass(fromDeg, routeBearing);
+  const speedTxt = windSpeed != null
+    ? `${windSpeed.toFixed(windSpeed < 10 ? 1 : 0)} m/s`
+    : '—';
+  const tagTxt = cls === 'unknown'                       ? '—'
+              : (windSpeed != null && windSpeed < 1)     ? 'CALM'
+              :                                            cls.toUpperCase();
+  const arrow = fromDeg != null
+    ? `<span class="wind-arrow" style="transform:rotate(${Math.round((fromDeg + 180) % 360)}deg)">↑</span>`
+    : '';
+  return `<span class="wind-chip wind-${cls}" style="background:${windChipTint(cls, windSpeed)}">${arrow}<span class="wind-speed">${speedTxt}</span><span class="wind-tag">${tagTxt}</span></span>`;
+}
+
+function tempChipHtml(temp, leg) {
+  if (temp == null) return '—';
+  const cls = tempClass(temp, leg);
+  return `<span class="temp-chip ${cls}">${Math.round(temp)}°</span>`;
+}
+
 function tempClass(temp, leg) {
   if (leg === 'Bike') {
     if (temp < 5)   return 'c-red';
@@ -986,7 +1031,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
       const tr = document.createElement('tr');
       tr.className = 'trans-row';
       tr.innerHTML =
-        `<td colspan="8">` +
+        `<td colspan="7">` +
         `<span class="trans-name">${row.name}</span>` +
         `<span class="trans-dur">${durStr}</span>` +
         `<span class="trans-out">out: ${outTime}</span>` +
@@ -1014,7 +1059,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
         });
         headerText += `<span class="water-temp-note current">Current: ${parts.join(' · ')}</span>`;
       }
-      seg.innerHTML = `<td colspan="8">${headerText}</td>`;
+      seg.innerHTML = `<td colspan="7">${headerText}</td>`;
       tbody.appendChild(seg);
     }
 
@@ -1023,7 +1068,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
 
     let weatherCellsLabeled;
     if (!row.entry) {
-      weatherCellsLabeled = `<td class="center no-data" data-label="Sky" colspan="5">No forecast</td>`;
+      weatherCellsLabeled = `<td class="center no-data" data-label="Sky" colspan="4">No forecast</td>`;
     } else {
       const inst  = row.entry.data.instant.details;
       const next  = row.entry.data.next_1_hours ?? row.entry.data.next_6_hours ?? null;
@@ -1032,16 +1077,11 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
       const temp  = inst.air_temperature ?? null;
       const wind  = inst.wind_speed ?? null;
       const dir   = inst.wind_from_direction ?? null;
-      const tempStr  = temp   != null ? `${temp.toFixed(1)}°`  : '—';
-      const windStr  = wind   != null ? `${wind.toFixed(1)}`   : '—';
-      const dirCell  = dir    != null ? windArrow(dir, row.cp.routeBearing ?? 90, wind ?? 0) : '—';
       const rainStr  = precip != null ? `${precip.toFixed(1)}` : '—';
-      const cls      = temp   != null ? tempClass(temp, row.leg) : '';
       weatherCellsLabeled =
         `<td class="center icon" data-label="Sky">${symbolEmoji(sym)}</td>` +
-        `<td class="num temp ${cls}" data-label="Temp">${tempStr}</td>` +
-        `<td class="num" data-label="Wind">${windStr} m/s</td>` +
-        `<td class="center" data-label="Dir">${dirCell}</td>` +
+        `<td class="center" data-label="Temp">${tempChipHtml(temp, row.leg)}</td>` +
+        `<td class="center" data-label="Wind">${windChipHtml(dir, row.cp.routeBearing ?? 90, wind)}</td>` +
         `<td class="num" data-label="Rain">${rainStr} mm</td>`;
     }
 
