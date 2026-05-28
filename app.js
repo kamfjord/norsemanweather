@@ -519,6 +519,28 @@ const MONTHS = [
   'July','August','September','October','November','December'
 ];
 
+// ── Race cut-offs ─────────────────────────────────────────────────────────────
+const CUTOFFS = [
+  { leg: 'Swim', cpName: 'Eidfjord',        limitSec: 2*3600 + 15*60,  label: '2h 15min cut-off' },
+  { isT2Exit: true,                          limitSec: 12*3600,          label: '12h cut-off' },
+  { leg: 'Run',  cpName: 'Zombie Hill base', limitSec: 15*3600,          label: '15h cut-off' },
+  { leg: 'Run',  cpName: 'Langefonn',        limitSec: 16*3600 + 30*60, label: '16h 30min cut-off' },
+  { leg: 'Run',  cpName: 'Stavsro',          limitSec: 14*3600 + 30*60, label: '14h 30min · no summit' },
+  { leg: 'Run',  cpName: 'Stavsro',          limitSec: 17*3600 + 45*60, label: '17h 45min cut-off' },
+];
+
+function cutoffChipHtml(elapsedSec, limitSec, label) {
+  const margin = limitSec - elapsedSec;
+  const absMin = Math.round(Math.abs(margin) / 60);
+  const h = Math.floor(absMin / 60);
+  const m = absMin % 60;
+  const marginStr = h > 0 ? (m > 0 ? `${h}h ${m}min` : `${h}h`) : `${m}min`;
+  const cls    = margin < 0 ? 'co-fail' : margin < 30 * 60 ? 'co-warn' : 'co-ok';
+  const icon   = margin < 0 ? '✗' : margin < 30 * 60 ? '⚠' : '✓';
+  const detail = margin < 0 ? `over by ${marginStr}` : `${marginStr} to spare`;
+  return `<span class="cutoff-chip ${cls}">${icon} ${label} · ${detail}</span>`;
+}
+
 const SYMBOLS = {
   clearsky: '☀️', fair: '🌤️', partlycloudy: '⛅', cloudy: '☁️',
   fog: '🌫️',
@@ -1005,7 +1027,8 @@ function analyzeSwimCurrent(oceanData, swimStartUtc, swimMs, swimBearing) {
 // ── Render ────────────────────────────────────────────────────────────────────
 
 function renderResults(enriched, year, month, day, planner, waterTemp, swimCurrent = []) {
-  const tbody = document.getElementById('forecast-body');
+  const tbody    = document.getElementById('forecast-body');
+  const startUtc = raceStartUtc(year, month, day, planner.startHour, planner.startMin);
   tbody.innerHTML = '';
 
   const totalSec = (planner.swimMin + planner.bikeMin + planner.runMin) * 60 + planner.t1Sec + planner.t2Sec;
@@ -1028,6 +1051,14 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
       const durStr = s > 0
         ? `${m}min ${String(s).padStart(2,'0')}s`
         : `${m}min`;
+      let coHtml = '';
+      if (row.name === 'T2 — Transition') {
+        const co = CUTOFFS.find(c => c.isT2Exit);
+        if (co) {
+          const elapsedSec = Math.round((row.endTime - startUtc) / 1000);
+          coHtml = `<div class="cutoff-row">${cutoffChipHtml(elapsedSec, co.limitSec, co.label)}</div>`;
+        }
+      }
       const tr = document.createElement('tr');
       tr.className = 'trans-row';
       tr.innerHTML =
@@ -1035,6 +1066,7 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
         `<span class="trans-name">${row.name}</span>` +
         `<span class="trans-dur">${durStr}</span>` +
         `<span class="trans-out">out: ${outTime}</span>` +
+        coHtml +
         `</td>`;
       tbody.appendChild(tr);
       continue;
@@ -1085,8 +1117,14 @@ function renderResults(enriched, year, month, day, planner, waterTemp, swimCurre
         `<td class="num" data-label="Rain">${rainStr} mm</td>`;
     }
 
+    const rowCutoffs = CUTOFFS.filter(c => !c.isT2Exit && c.leg === row.leg && c.cpName === row.cp.name);
+    const elapsedSec = Math.round((row.time - startUtc) / 1000);
+    const coHtml = rowCutoffs.length
+      ? `<div class="cutoff-row">${rowCutoffs.map(c => cutoffChipHtml(elapsedSec, c.limitSec, c.label)).join('')}</div>`
+      : '';
+
     tr.innerHTML =
-      `<td data-label="Location"><span class="loc">${row.cp.name}</span></td>` +
+      `<td data-label="Location"><span class="loc">${row.cp.name}</span>${coHtml}</td>` +
       `<td class="num" data-label="km">${row.cp.km}</td>` +
       `<td class="num" data-label="Time">${formatLocalTime(row.time, month)}</td>` +
       weatherCellsLabeled;
